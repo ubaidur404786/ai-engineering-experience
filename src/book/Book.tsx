@@ -4,7 +4,7 @@ import { SPREADS, CHAPTER_TITLES } from '../chapters/registry';
 import { CURRICULUM } from '../data/curriculum';
 import { STAGE_LABEL } from './types';
 import { LabContext, LabOverlay } from './Lab';
-import { stopAllScenes } from '../scene/store';
+import { startScene, stopAllScenes } from '../scene/store';
 
 const FLIP_MS = 900;
 
@@ -31,12 +31,15 @@ export default function Book({ onClose }: { onClose: () => void }) {
   const [lab, setLab] = useState<{ title: string; body: ReactNode } | null>(null);
   const [visited, setVisited] = useState<Set<string>>(() => new Set(JSON.parse(localStorage.getItem('visited') || '[]')));
   const narrow = useIsNarrow();
+  const [showText, setShowText] = useState(() => localStorage.getItem('showText') !== 'off');
+  const toggleText = () => setShowText((v) => { localStorage.setItem('showText', v ? 'off' : 'on'); return !v; });
   const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const spread = SPREADS[index];
 
   useEffect(() => {
     stopAllScenes();
+    startScene(spread.id);   // load this page's voice, then John starts explaining by himself
     history.replaceState(null, '', `#p/${spread.id}`);
     setVisited((v) => {
       const n = new Set(v); n.add(spread.id);
@@ -74,13 +77,18 @@ export default function Book({ onClose }: { onClose: () => void }) {
             <span className="crumb-ch">{CHAPTER_TITLES[spread.chapter]}</span>
             {spread.stage && <span className="crumb-stage">{STAGE_LABEL[spread.stage]}</span>}
           </div>
+          {narrow && spread.visualFirst && (
+            <button className={`btn-ghost text-toggle ${showText ? 'on' : ''}`} onClick={toggleText} aria-pressed={showText} title="Show or hide John’s text page">
+              {showText ? '📝 Hide text' : '📝 Show text'}
+            </button>
+          )}
           <div className="progress" role="progressbar" aria-label="Chapter progress" aria-valuemin={1} aria-valuemax={chapterSpreads.length} aria-valuenow={posInChapter}>
             {chapterSpreads.map((s) => <span key={s.id} className={`dot ${s.id === spread.id ? 'on' : visited.has(s.id) ? 'seen' : ''}`} />)}
           </div>
         </nav>
 
         {narrow ? (
-          <MobileBook index={index} go={go} />
+          <MobileBook index={index} go={go} showText={showText} />
         ) : (
           <div className="book" aria-live="polite">
             <BookSpread index={flip ? (flip.to > flip.from ? flip.from : flip.to) : index} side="left" />
@@ -90,11 +98,19 @@ export default function Book({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        <footer className="pager">
-          <button className="btn-ghost" onClick={() => go(index - 1)} disabled={index === 0}>← Previous</button>
-          <span className="pager-num">{index + 1} / {SPREADS.length}</span>
-          <button className="btn-primary sm" onClick={() => go(index + 1)} disabled={index === SPREADS.length - 1}>Next →</button>
-        </footer>
+        {narrow ? (
+          <nav className="fab-nav" aria-label="Turn page">
+            <button className="fab" onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous page">‹</button>
+            <span className="fab-num">{index + 1} / {SPREADS.length}</span>
+            <button className="fab next" onClick={() => go(index + 1)} disabled={index === SPREADS.length - 1} aria-label="Next page">›</button>
+          </nav>
+        ) : (
+          <footer className="pager">
+            <button className="btn-ghost" onClick={() => go(index - 1)} disabled={index === 0}>← Previous</button>
+            <span className="pager-num">{index + 1} / {SPREADS.length}</span>
+            <button className="btn-primary sm" onClick={() => go(index + 1)} disabled={index === SPREADS.length - 1}>Next →</button>
+          </footer>
+        )}
 
         <AnimatePresence>
           {tocOpen && <Toc current={spread.id} visited={visited} onPick={(i) => { setTocOpen(false); go(i); }} onClose={() => setTocOpen(false)} />}
@@ -140,14 +156,15 @@ function Leaf({ flip }: { flip: { from: number; to: number } }) {
   );
 }
 
-/** Mobile: one column, left page then right page, swipe left/right to turn. */
-function MobileBook({ index, go }: { index: number; go: (i: number) => void }) {
+/** Mobile: one column (diagram first for scenes), swipe left/right to turn. John's text page can be hidden. */
+function MobileBook({ index, go, showText }: { index: number; go: (i: number) => void; showText: boolean }) {
   const s = SPREADS[index];
+  const hideText = s.visualFirst && !showText;
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={s.id}
-        className="mobile-page"
+        className={`mobile-page ${hideText ? 'text-hidden' : ''}`}
         initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
         transition={{ duration: 0.3 }}
         drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.15} dragDirectionLock
@@ -155,8 +172,7 @@ function MobileBook({ index, go }: { index: number; go: (i: number) => void }) {
       >
         <div className="page-scroll">
           {s.visualFirst ? s.right : s.left}
-          <hr className="page-sep" />
-          {s.visualFirst ? s.left : s.right}
+          {!hideText && <><hr className="page-sep" />{s.visualFirst ? s.left : s.right}</>}
         </div>
       </motion.div>
     </AnimatePresence>

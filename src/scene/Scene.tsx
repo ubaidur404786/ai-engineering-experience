@@ -34,7 +34,7 @@ export function scene(def: SceneDef): Spread {
 
 function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
   const s = useScene(c);
-  const { voiceOn, rate } = useVoice();
+  const { voiceOn, rate, autoOn } = useVoice();
   const cue = def.cues[s.idx];
   const [open, setOpen] = useState(false);
   return (
@@ -53,6 +53,7 @@ function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
         <select className="chip-btn" value={rate} onChange={(e) => voiceStore.setRate(+e.target.value)} aria-label="Speed">
           <option value={0.8}>0.8×</option><option value={1}>1×</option><option value={1.25}>1.25×</option><option value={1.5}>1.5×</option>
         </select>
+        <button className={`chip-btn ${autoOn ? 'on' : ''}`} onClick={() => voiceStore.setAuto(!autoOn)} aria-pressed={autoOn} title="Start explaining as soon as a page opens">{autoOn ? '⏯ Auto-start on' : '⏯ Auto-start off'}</button>
         {def.details && <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>{open ? 'Hide details' : '📖 Show the details'}</button>}
       </div>
       <AnimatePresence>
@@ -77,9 +78,23 @@ function Controls({ c, cues }: { c: Controller; cues: Cue[] }) {
       <div className="cue-track" role="group" aria-label="Scene steps">
         {cues.map((_, i) => <button key={i} className={i === s.idx ? 'on' : i < s.idx ? 'done' : ''} onClick={() => c.goto(i)} aria-label={`Step ${i + 1}`} />)}
       </div>
-      {!s.playing && s.idx === 0 && <span className="hint">Press ▶ and I’ll explain</span>}
+      <Status c={c} />
     </div>
   );
+}
+
+/** Loading progress, the "tap to start" prompt, and the "stop me anytime" reminder. */
+function Status({ c }: { c: Controller }) {
+  const s = useScene(c);
+  if (s.loading !== null) return (
+    <div className="loadbar" role="progressbar" aria-label="Loading this page" aria-valuenow={Math.round(s.loading * 100)}>
+      <span>Page is loading… {Math.round(s.loading * 100)}%</span><i style={{ width: `${s.loading * 100}%` }} />
+    </div>
+  );
+  if (s.blocked) return <button className="hint tap" onClick={() => c.play()}>👆 Tap ▶ once and I’ll start (your browser wants one click first)</button>;
+  if (s.playing) return <span className="hint">Stop me anytime with ❚❚, I won’t mind.</span>;
+  if (s.idx === 0) return <span className="hint">Press ▶ and I’ll explain</span>;
+  return null;
 }
 
 function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
@@ -94,9 +109,9 @@ function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
           {def.draw(step)}
           <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} />
         </svg>
-        <div className="stage-sub" aria-hidden="true">{cue.say}</div>
-        <div className="mini-ctrl"><Controls c={c} cues={def.cues} /></div>
       </div>
+      <div className="stage-sub" aria-hidden="true">{cue.say}</div>
+      <div className="mini-ctrl"><Controls c={c} cues={def.cues} /></div>
       {def.below}
     </div>
   );

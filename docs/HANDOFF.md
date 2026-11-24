@@ -6,7 +6,10 @@
 
 ## What the user wants (non-negotiable style)
 - **Little reading.** Every topic is a *narrated scene*: John (the guide) speaks; the left page shows his words as subtitles; the right page is an animated diagram where John walks along the floor and points with a stick. Depth goes behind "📖 Show the details".
-- **John:** young, friendly teacher. Navy shirt, black trousers, black formal shoes, pointer stick, no beard. Talks casually with light humor ("check the next page, bro"). Addresses the reader as Ubaid sometimes; the book was Ubaid's idea.
+- **John:** young, friendly teacher. Navy shirt, black trousers, black formal shoes, pointer stick, no beard. Talks casually with light humor ("check the next page, bro"). Speaks to *any* reader (no greeting to Ubaid by name): "I'm here to guide you, you're not alone".
+- **Auto-start:** when a page opens, its voice clips download with a "Page is loading… %" bar, then John starts by himself (toggle: ⏯ Auto-start). If the browser blocks sound before the first click, a "Tap ▶ once" prompt appears. While playing the hint says "Stop me anytime".
+- **End of every part:** last scene says "now you know these, next page is a quick test, take it or skip it"; the quiz page has a skip note; then a "What's next" scene points to the next chapter.
+- **Phones:** floating ‹ › buttons, "📝 Hide/Show text" toggle in the top bar (hidden text = stage + subtitle + controls only).
 - **Voice:** pre-recorded neural voice (edge-tts `en-US-AndrewMultilingualNeural`, rate +8%, pitch +3Hz). Should feel like ChatGPT/Gemini voice. No autoplay; starts on ▶.
 - **No delay:** keep cue gaps short, preload next clip.
 - **Accuracy:** real tokenizer/numbers where possible; anything simplified is labelled "Simulation" or "Illustrative". Log facts in `docs/ACCURACY_LOG.md`.
@@ -31,8 +34,8 @@
 | Done | Notes |
 |---|---|
 | Book engine | cover, 3D page flip, Contents drawer, progress, mobile swipe (diagram first on phones), lab overlay |
-| Welcome | John greets Ubaid, explains left page (his words) vs right page (his stick) |
-| Part 0 complete | two sides, four roles, AI⊃ML⊃DL⊃GenAI, foundation models + LLM/SLM sizes, open vs closed, model → app layers, lifecycle loop, quiz |
+| Welcome (3 scenes) | Meet John (not alone, two pages, stop me anytime) · Why this book isn't boring · Skill journey (what you can do at the end) |
+| Part 0 complete | two sides, four roles, AI⊃ML⊃DL⊃GenAI, foundation models + LLM/SLM sizes, open vs closed, model → app layers, lifecycle loop, quiz (skippable), What's next scene |
 | Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python page, quiz, references |
 
 ## Next chapter
@@ -40,6 +43,7 @@ Reading order next: **Part 1 · Foundations**, starting with chapter `data` ("Da
 After Part 1, continue Part 2 with `embeddings-in` (token IDs → vectors); the tokenization chapter already ends by promising it.
 
 ## Known gaps / ideas
+- Harmless console warnings ("attribute cx: Expected length") from motion SVG elements on first render.
 - John's face is a simple side-view cartoon; could be more detailed.
 - Narration player has no captions download / transcript page yet.
 - Presentation claims to re-check before reuse: see `docs/ACCURACY_LOG.md`.

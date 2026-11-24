@@ -9,56 +9,6 @@ import { Kicker, Quiz } from '../book/ui';
    one idea per cue. Facts must stay correct (see docs/ACCURACY_LOG.md).
    ===================================================================== */
 
-/* ============ Welcome: John greets Ubaid and explains the two pages ============ */
-
-function WelcomeDiagram({ step }: { step: number }) {
-  return (
-    <g>
-      {step <= 1 && (
-        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <text x="300" y="120" textAnchor="middle" className="hello">Hi, Ubaid! 👋</text>
-          <text x="300" y="160" textAnchor="middle" className="cap">this whole book started as your idea</text>
-          {step === 1 && <motion.text x="300" y="230" textAnchor="middle" className="slabel" initial={{ scale: 0 }} animate={{ scale: 1 }}>💡 → 📖</motion.text>}
-        </motion.g>
-      )}
-      {step >= 2 && (
-        <motion.g initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          {/* a tiny open book */}
-          <path d="M60 70 Q180 50 296 76 L296 330 Q180 304 60 324 Z" className={`mini-page ${step === 2 ? 'hot' : ''}`} />
-          <path d="M304 76 Q420 50 540 70 L540 324 Q420 304 304 330 Z" className={`mini-page ${step === 3 ? 'hot' : ''}`} />
-          <text x="178" y="110" textAnchor="middle" className="slabel">Left page</text>
-          <text x="178" y="132" textAnchor="middle" className="ssub paper">what I say, as text</text>
-          {[160, 182, 204, 226].map((y) => <rect key={y} x="90" y={y} width={y === 226 ? 120 : 176} height="9" rx="4" className="txt-line" />)}
-          <text x="422" y="110" textAnchor="middle" className="slabel">Right page</text>
-          <text x="422" y="132" textAnchor="middle" className="ssub paper">where I point with my stick</text>
-          <rect x="350" y="160" width="60" height="40" rx="6" className="sbox teal" />
-          <rect x="440" y="230" width="60" height="40" rx="6" className="sbox brass" />
-          <Flow d="M410 180 C440 180 470 200 470 226" active={step >= 3} />
-        </motion.g>
-      )}
-      {step >= 4 && (
-        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <rect x="110" y="350" width="380" height="54" rx="12" className="sbox night" />
-          <text x="300" y="382" textAnchor="middle" className="slabel night">▶ play · ⏭ skip · 🔇 mute · Next page →</text>
-        </motion.g>
-      )}
-    </g>
-  );
-}
-
-export const welcomeScene = scene({
-  id: 'welcome', chapter: 'welcome', kicker: 'Before we begin', title: 'Meet John, your guide.',
-  cues: [
-    { say: 'Hey Ubaid! I’m John, and I’ll be your guide through this entire book. Nice to finally meet you!', point: [300, 120], bubble: 'hello! 👋' },
-    { say: 'Fun fact: this whole book was your idea. So honestly, if it gets confusing, I’m blaming you. Just kidding. Your idea makes my job easy: I explain, you watch, and it all clicks.', point: [300, 230], bubble: 'Ubaid’s idea → this book' },
-    { say: 'Here’s how it works. Every opening of the book has two pages. The left page is mine: everything I say appears there as text, like subtitles.', point: [178, 190], bubble: 'my words live here' },
-    { say: 'The right page is my stage. That’s where things move, and I walk around and point at stuff with this stick. Very professional. Very scientific.', point: [470, 250], bubble: 'my office 😎' },
-    { say: 'Press play, and I’ll explain. Skip, pause, or mute me anytime. I won’t be offended. Much. Now check the next page, bro. Let’s go!', point: [300, 377], bubble: 'next page →' },
-  ],
-  draw: (s) => <WelcomeDiagram step={s} />,
-  details: <p>Green labels mean <b>real execution</b> (numbers computed live). Gold labels mean <b>simulation</b> (simplified, and we say how). Use ← → keys or swipe on a phone.</p>,
-});
-
 /* ============ 0.1 Two sides of AI engineering ============ */
 
 const ROWS: [string, string][] = [
@@ -104,7 +54,7 @@ export const twoSidesScene = scene({
     { say: 'Okay, here’s the one idea that holds this whole book together. Every AI product has two sides. Like a coin. A very expensive coin.', point: [300, 110], bubble: 'the big mental model' },
     { say: 'The builder side is data science: collecting data, training models, optimizing them, and testing them.', point: [140, 110], bubble: 'how the model is made' },
     { say: 'The user side is software engineering: taking a model and turning it into apps, APIs and backends that real people use.', point: [460, 110], bubble: 'how people use it' },
-    { say: 'An AI engineer stands in the middle and connects both. You know how the model thinks, and you can ship it to users. Basically, you’re the translator.', point: [300, 110], bubble: 'that’s you, Ubaid!' },
+    { say: 'An AI engineer stands in the middle and connects both. You know how the model thinks, and you can ship it to users. Basically, you’re the translator.', point: [300, 110], bubble: 'that’s you! 🫵' },
     { say: 'And look: every builder activity has a user-side twin. We’ll jump between these two sides a lot. Don’t worry, I’ll carry the stick.', point: [300, 300], bubble: 'same idea, two views' },
   ],
   draw: (s) => <SidesDiagram step={s} />,
@@ -395,7 +345,7 @@ const lifeScene = scene({
     { say: 'It starts with a clear problem, not a cool model. Then you pick a model that fits: open or closed, big or small.', point: [420, 110], bubble: 'problem first!' },
     { say: 'You build the app around it, and then you evaluate it on real examples. If it fails, you fix it before users ever see it.', point: [430, 300], bubble: 'test before shipping' },
     { say: 'Then deploy, and monitor what real users do. Real users always find the one question you never tested. Always.', point: [200, 330], bubble: 'users = chaos' },
-    { say: 'Every failure becomes a lesson, and you improve and go around again. That loop is the job. And that’s Part Zero done! Check the next page, bro. Time to look inside the model.', point: [170, 120], bubble: 'improve → repeat' },
+    { say: 'Every failure becomes a lesson, and you improve and go around again. That loop is the job. And boom, Part Zero done! Now that you know these ideas, next page is a quick test. Four questions. Take it, or skip it. I won’t tell anyone.', point: [170, 120], bubble: 'improve → repeat' },
   ],
   draw: (s) => <LifeDiagram step={s} />,
   details: <p>Notice the order: the problem and the evaluation plan come before any model work. Parts 7 and 8 of this book are entirely about the evaluate → monitor → improve half of this loop.</p>,
@@ -408,7 +358,8 @@ const part0Quiz: Spread = {
   left: (
     <>
       <Kicker>Test yourself</Kicker>
-      <h1>Quick check, Ubaid.</h1>
+      <h1>Quick check.</h1>
+      <p className="skip-note">Four questions, no pressure. Not in the mood? Hit <b>Next →</b> to skip. John won’t tell anyone.</p>
       <Quiz items={[
         { q: 'A spam filter uses hand-written rules like “contains FREE MONEY”. What is it?', options: ['Deep learning', 'AI, but not machine learning', 'Generative AI'], answer: 1, why: 'Rules written by a person still count as AI, but nothing was learned from data, so it isn’t ML.' },
         { q: 'Your company can’t send customer data outside its servers. Which model type fits best?', options: ['A closed model via API', 'An open-weight model you host yourself', 'It doesn’t matter'], answer: 1, why: 'With open weights the model runs on your own hardware, so the data never leaves.' },
@@ -423,4 +374,44 @@ const part0Quiz: Spread = {
   ),
 };
 
-export const part0 = [twoSidesScene, rolesScene, nestScene, foundationScene, openClosedScene, appScene, lifeScene, part0Quiz];
+/* ============ What's next ============ */
+
+function NextDiagram({ step }: { step: number }) {
+  const done = ['Two sides of AI engineering', 'Four roles', 'AI ⊃ ML ⊃ DL ⊃ GenAI', 'LLMs vs SLMs', 'Open vs closed', 'Model → app', 'The lifecycle'];
+  return (
+    <g>
+      <text x="40" y="44" className="slabel">✓ Part 0: what you now know</text>
+      {done.map((d, i) => (
+        <motion.g key={d} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 }}>
+          <text x="52" y={78 + i * 28} className="ok">✓ {d}</text>
+        </motion.g>
+      ))}
+      {step >= 1 && (
+        <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+          <Flow d="M290 180 L350 180" count={3} dur={1} color="#c4974a" />
+          <Box x={355} y={120} w={220} h={120} label="Up next: Tokenization" sub="how a model reads text" tone="night" hot />
+        </motion.g>
+      )}
+      {step >= 2 && (
+        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <text x="465" y="278" textAnchor="middle" className="ssub paper">real GPT tokenizers, live</text>
+          <text x="465" y="296" textAnchor="middle" className="ssub paper">in your browser</text>
+          <text x="300" y="370" textAnchor="middle" className="cap">Part 1 (data, neurons, learning) is being written</text>
+        </motion.g>
+      )}
+    </g>
+  );
+}
+
+const part0Next = scene({
+  id: 'part0-next', chapter: 'model-landscape', kicker: 'Part 0 · Done!', title: 'What’s next?',
+  cues: [
+    { say: 'Look at that list. Seven big ideas, and you didn’t fall asleep once. I’m proud of us.', point: [150, 160], bubble: 'Part 0 ✓' },
+    { say: 'Next up: tokenization. How a model actually reads your text. Spoiler: it doesn’t see words at all, it sees little pieces called tokens.', point: [465, 180], bubble: 'the model’s eyes 👀' },
+    { say: 'And it’s not a drawing: you’ll play with the real GPT tokenizers, running live in your browser. Ready? Check the next page, bro!', point: [465, 285], bubble: 'next page →' },
+  ],
+  draw: (s) => <NextDiagram step={s} />,
+  details: <p>Reading order right now: Part 0, then Part 2’s tokenization chapter. Part 1 (data, learning types, the neuron, how models learn, over- and underfitting) is planned and will slot in before it.</p>,
+});
+
+export const part0 = [twoSidesScene, rolesScene, nestScene, foundationScene, openClosedScene, appScene, lifeScene, part0Quiz, part0Next];

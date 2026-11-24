@@ -281,3 +281,28 @@ button.toc-item:hover { background: var(--night-3); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
+
+/* ---------- Phone layout ---------- */
+.fab-nav { display: none; }
+@media (max-width: 900px) {
+  html, body, #root { height: 100dvh; }
+  .book-shell { grid-template-rows: auto 1fr; gap: 6px; padding: 6px 6px 0; }
+  .topbar { gap: 6px; }
+  .topbar .btn-ghost { padding: .4em .6em; font-size: .85rem; }
+  .text-toggle { margin-left: auto; white-space: nowrap; }
+  .text-toggle.on { color: var(--brass-2); }
+  .mobile-page .page-scroll { padding: 14px 14px 96px; }
+  .fab-nav { position: fixed; left: 0; right: 0; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; }
+  .fab { pointer-events: auto; width: 54px; height: 54px; border-radius: 50%; border: 0; font-size: 2rem; line-height: 1; display: grid; place-items: center; background: rgba(20,28,38,.88); color: #f1e6cf; box-shadow: 0 6px 18px rgba(0,0,0,.35); backdrop-filter: blur(6px); }
+  .fab.next { background: var(--brass); color: #1b1408; }
+  .fab:disabled { opacity: .3; }
+  .fab-num { pointer-events: none; font: .75rem var(--mono); color: #f1e6cf; background: rgba(20,28,38,.75); padding: 4px 10px; border-radius: 999px; }
+  .text-hidden .stage-sub { display: block; margin-top: -6px; padding: 10px 12px; border-radius: 12px; background: #fffaf0; border: 1px solid var(--paper-edge); font: 1rem/1.45 var(--serif); }
+  .text-hidden .mini-ctrl { display: block; margin-top: 10px; }
+}
+.skip-note { font-style: italic; color: var(--ink-2); }
+@media (max-width: 900px) {
+  /* keep the stage, subtitle and controls on one screen */
+  .mobile-page .stage-box { width: min(100%, calc(56dvh * 600 / 660)); margin: 0 auto; }
+}
+@media (max-width: 900px) { .mobile-page .stage-panel, .mobile-page .guide { min-height: 0; } }

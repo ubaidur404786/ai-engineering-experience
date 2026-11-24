@@ -69,11 +69,11 @@ export default function Teacher({ target, talking, comment }: { target?: [number
           <Body walking={walking} talking={talking} />
         </g>
         {/* stick (behind the hand), upper arm, forearm, joints, hand */}
-        <motion.line animate={{ x1: hand[0], y1: hand[1], x2: tip[0], y2: tip[1] }} transition={spring} className="stick" />
-        {pointing && <motion.circle animate={{ cx: tip[0], cy: tip[1], scale: [1, 1.5, 1] }} transition={{ ...spring, scale: { duration: 1.2, repeat: Infinity } }} r="4" className="stick-tip" />}
-        <motion.line animate={{ x1: shoulder[0], y1: shoulder[1], x2: elbow[0], y2: elbow[1] }} transition={spring} className="arm-sleeve" style={{ strokeWidth: 9.5 * S }} />
-        <motion.line animate={{ x1: elbow[0], y1: elbow[1], x2: hand[0], y2: hand[1] }} transition={spring} className="arm-sleeve fore" style={{ strokeWidth: 8.5 * S }} />
-        <motion.circle animate={{ cx: hand[0], cy: hand[1] }} transition={spring} r={5.2 * S} className="hand" />
+        <motion.line initial={false} animate={{ x1: hand[0], y1: hand[1], x2: tip[0], y2: tip[1] }} transition={spring} className="stick" />
+        {pointing && <motion.circle initial={false} animate={{ cx: tip[0], cy: tip[1], scale: [1, 1.5, 1] }} transition={{ ...spring, scale: { duration: 1.2, repeat: Infinity } }} r="4" className="stick-tip" />}
+        <motion.line initial={false} animate={{ x1: shoulder[0], y1: shoulder[1], x2: elbow[0], y2: elbow[1] }} transition={spring} className="arm-sleeve" style={{ strokeWidth: 9.5 * S }} />
+        <motion.line initial={false} animate={{ x1: elbow[0], y1: elbow[1], x2: hand[0], y2: hand[1] }} transition={spring} className="arm-sleeve fore" style={{ strokeWidth: 8.5 * S }} />
+        <motion.circle initial={false} animate={{ cx: hand[0], cy: hand[1] }} transition={spring} r={5.2 * S} className="hand" />
       </motion.g>
 
       {/* what he's saying about this spot */}
@@ -134,7 +134,7 @@ function Body({ walking, talking }: { walking: boolean; talking: boolean }) {
         <path d={`M-6 ${Y - 128} q3 -2 6 0`} className="brow" />
         <ellipse cx="-3" cy={Y - 116} rx="2.6" ry="1.4" className="blush" />
         <path d={`M13 ${Y - 121} q3 4 -1 5`} className="nose" />
-        <motion.ellipse cx="6" cy={Y - 112} rx="4.2" className="mouth" animate={talking ? { ry: [0.8, 2.8, 1.2, 3.2, 0.8] } : { ry: 0.9 }} transition={{ duration: 0.7, repeat: talking ? Infinity : 0 }} />
+        <motion.ellipse cx="6" cy={Y - 112} rx="4.2" ry="0.9" className="mouth" animate={talking ? { ry: [0.8, 2.8, 1.2, 3.2, 0.8] } : { ry: 0.9 }} transition={{ duration: 0.7, repeat: talking ? Infinity : 0 }} />
       </motion.g>
     </motion.g>
   );
