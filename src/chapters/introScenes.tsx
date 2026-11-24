@@ -1,7 +1,6 @@
 import { motion } from 'motion/react';
 import { scene, Box, Flow } from '../scene/Scene';
-import type { Spread } from '../book/types';
-import { Kicker, Quiz } from '../book/ui';
+import { quizScene } from '../scene/quizScene';
 
 /* =====================================================================
    INTRO + PART 0. Narrated by John (see src/scene/Teacher.tsx).
@@ -353,26 +352,20 @@ const lifeScene = scene({
 
 /* ============ Part 0 check ============ */
 
-const part0Quiz: Spread = {
-  id: 'part0-test', chapter: 'model-landscape', stage: 'test', title: 'Part 0: test yourself',
-  left: (
-    <>
-      <Kicker>Test yourself</Kicker>
-      <h1>Quick check.</h1>
-      <p className="skip-note">Four questions, no pressure. Not in the mood? Just turn the page to skip. John won’t tell anyone.</p>
-      <Quiz items={[
-        { q: 'A spam filter uses hand-written rules like “contains FREE MONEY”. What is it?', options: ['Deep learning', 'AI, but not machine learning', 'Generative AI'], answer: 1, why: 'Rules written by a person still count as AI, but nothing was learned from data, so it isn’t ML.' },
-        { q: 'Your company can’t send customer data outside its servers. Which model type fits best?', options: ['A closed model via API', 'An open-weight model you host yourself', 'It doesn’t matter'], answer: 1, why: 'With open weights the model runs on your own hardware, so the data never leaves.' },
-      ]} />
-    </>
-  ),
-  right: (
-    <Quiz items={[
-      { q: 'What does an AI engineer mostly do?', options: ['Train giant models from scratch', 'Build products on top of existing models, and evaluate them', 'Only design user interfaces'], answer: 1, why: 'AI engineers connect both sides: they understand models, and they turn them into working, measured products.' },
-      { q: 'Where does the lifecycle start?', options: ['Choosing the biggest model', 'Defining the problem and how success is measured', 'Deploying quickly'], answer: 1, why: 'Problem first, then model. Otherwise you have a solution looking for a problem.' },
-    ]} />
-  ),
-};
+const part0Quiz = quizScene({
+  id: 'part0-test', chapter: 'model-landscape', title: 'Part 0: quick check.',
+  outro: 'Part Zero, done and tested! Turn the page, and I’ll show you what’s coming next.',
+  items: [
+    { ask: 'Quiz time, and I’m hosting! Four questions. Not in the mood? Just turn the page. First: a spam filter uses hand written rules, like contains free money. What is it?', q: 'A spam filter uses hand-written rules like “contains FREE MONEY”. What is it?', options: ['Deep learning', 'AI, but not machine learning', 'Generative AI'], answer: 1,
+      explain: 'Rules written by a person still count as AI, but nothing was learned from data, so it isn’t machine learning.' },
+    { ask: 'Question two. Your company can’t send customer data outside its own servers. Which model type fits best?', q: 'Customer data can’t leave your servers. Which model type fits best?', options: ['A closed model via API', 'An open-weight model you host yourself', 'It doesn’t matter'], answer: 1,
+      explain: 'With open weights, the model runs on your own hardware, so the data never leaves the building.' },
+    { ask: 'Question three. What does an AI engineer mostly do?', q: 'What does an AI engineer mostly do?', options: ['Train giant models from scratch', 'Build products on top of existing models, and evaluate them', 'Only design user interfaces'], answer: 1,
+      explain: 'AI engineers connect both sides: they understand models, and they turn them into working, measured products.' },
+    { ask: 'Last one. Where does the lifecycle start?', q: 'Where does the lifecycle start?', options: ['Choosing the biggest model', 'Defining the problem and how success is measured', 'Deploying quickly'], answer: 1,
+      explain: 'Problem first, then the model. Otherwise you have a solution looking for a problem.' },
+  ],
+});
 
 /* ============ What's next ============ */
 
@@ -389,14 +382,13 @@ function NextDiagram({ step }: { step: number }) {
       {step >= 1 && (
         <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
           <Flow d="M290 180 L350 180" count={3} dur={1} color="#c4974a" />
-          <Box x={355} y={120} w={220} h={120} label="Up next: Tokenization" sub="how a model reads text" tone="night" hot />
+          <Box x={355} y={120} w={220} h={120} label="Up next: Part 1 · Data" sub="what a model learns from" tone="night" hot />
         </motion.g>
       )}
       {step >= 2 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <text x="465" y="278" textAnchor="middle" className="ssub paper">real GPT tokenizers, live</text>
-          <text x="465" y="296" textAnchor="middle" className="ssub paper">in your browser</text>
-          <text x="300" y="370" textAnchor="middle" className="cap">Part 1 (data, neurons, learning) is being written</text>
+          <text x="465" y="278" textAnchor="middle" className="ssub paper">tables, cleaning, train / test</text>
+          <text x="465" y="296" textAnchor="middle" className="ssub paper">and real Python, with me</text>
         </motion.g>
       )}
     </g>
@@ -407,11 +399,11 @@ const part0Next = scene({
   id: 'part0-next', chapter: 'model-landscape', kicker: 'Part 0 · Done!', title: 'What’s next?',
   cues: [
     { say: 'Look at that list. Seven big ideas, and you didn’t fall asleep once. I’m proud of us.', point: [150, 160], bubble: 'Part 0 ✓' },
-    { say: 'Next up: tokenization. How a model actually reads your text. Spoiler: it doesn’t see words at all, it sees little pieces called tokens.', point: [465, 180], bubble: 'the model’s eyes 👀' },
-    { say: 'And it’s not a drawing: you’ll play with the real GPT tokenizers, running live in your browser. Ready? Check the next page, bro!', point: [465, 285], bubble: 'next page →' },
+    { say: 'Next up: Part 1, the foundations. And we start with data, the stuff every model learns from. Spoiler: it’s messier than you think.', point: [465, 180], bubble: 'Part 1 →' },
+    { say: 'We’ll clean a real table and split it in real Python, and I’ll stand next to the code the whole time. Ready? Check the next page, bro!', point: [465, 285], bubble: 'next page →' },
   ],
   draw: (s) => <NextDiagram step={s} />,
-  details: <p>Reading order right now: Part 0, then Part 2’s tokenization chapter. Part 1 (data, learning types, the neuron, how models learn, over- and underfitting) is planned and will slot in before it.</p>,
+  details: <p>Part 1 covers data, the ways a machine learns, the neuron, how networks learn, and over- and underfitting. Data is ready now; the rest is being written.</p>,
 });
 
 export const part0 = [twoSidesScene, rolesScene, nestScene, foundationScene, openClosedScene, appScene, lifeScene, part0Quiz, part0Next];

@@ -151,3 +151,44 @@
 .guide { gap: 10px; }
 .guide .lab-launcher, .guide > .launcher { padding: 12px 16px; }
 @media (max-width: 900px) { .guide-body { flex-direction: column; align-items: stretch; } }
+
+/* ---------- code on John's board ---------- */
+.cb-bg { fill: #1f2a37; }
+.cb-out { fill: #14202b; stroke: #c4974a; stroke-width: 1.2; }
+.cb-title { font: 700 12px var(--sans); fill: #c4974a; letter-spacing: .04em; }
+.cb-note { font-weight: 400; fill: #9fb3c2; }
+.cb-line { font: 500 13.5px ui-monospace, Consolas, "Cascadia Mono", monospace; fill: #e8eef2; transition: opacity .3s; }
+.cb-line.cmt { fill: #8fb39a; font-style: italic; }
+.cb-line.dim { opacity: .42; }
+.cb-line.out { fill: #f3dfb5; font-size: 13px; }
+.cb-hot { fill: rgba(196,151,74,.22); stroke: #c4974a; stroke-width: 1; }
+
+/* ---------- quiz John hosts ---------- */
+.qb { height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; font-family: var(--serif); color: var(--ink); }
+.qb-n { font: 700 14px var(--sans); color: var(--teal); letter-spacing: .05em; text-transform: uppercase; }
+.qb-q { font: 600 21px/1.3 var(--serif); }
+.qb-opts { display: grid; gap: 9px; margin-top: 4px; }
+.qb-opt { text-align: left; padding: 10px 14px; min-height: 54px; border-radius: 10px; border: 1.5px solid var(--paper-edge); background: #fffaf0; color: var(--ink); font: 17px/1.3 var(--serif); cursor: pointer; transition: background .2s, border-color .2s, opacity .2s; }
+.qb-opt b { display: inline-block; width: 1.6em; color: var(--teal); font-family: var(--sans); }
+.qb-opt:hover { border-color: var(--teal); }
+.qb-opt.right { background: #c6e3bf; border-color: var(--green); } .qb-opt.wrong { background: #f0c3b6; border-color: var(--rose); }
+.qb-opt.right::after { content: ' ✓'; color: var(--green); font-weight: 700; } .qb-opt.wrong::after { content: ' ✗'; color: var(--rose); font-weight: 700; } .qb-opt.dim { opacity: .5; }
+.qb-next { align-self: flex-end; margin-top: auto; padding: 9px 18px; border-radius: 999px; border: 0; background: var(--night-2); color: #f3ebdb; font: 700 16px var(--sans); cursor: pointer; }
+.qb-end { align-items: center; justify-content: center; text-align: center; }
+.qb-end p { font-size: 20px; max-width: 26em; }
+.qb-score { font: 700 72px var(--serif); color: var(--teal); }
+
+/* ---------- tables on the stage (data chapter) ---------- */
+.tcell { fill: #fffaf0; stroke: #cbbd9d; stroke-width: 1; transition: fill .3s; }
+.tcell.head { fill: #efe7d6; }
+.tcell.feat { fill: #d6e7e8; } .tcell.head.feat { fill: #b9d7d9; }
+.tcell.lab { fill: #f0dcc0; } .tcell.head.lab { fill: #e5c595; }
+.tcell.flag { fill: #f3d7cf; stroke: var(--rose); }
+.tcell-t { font: 500 14px var(--sans); fill: var(--ink); } .tcell-t.head { font-weight: 700; }
+.strike { stroke: var(--rose); stroke-width: 2.5; }
+.big-rule { font: 700 30px var(--serif); fill: var(--ink); }
+.feat-t { font: 700 14px var(--sans); fill: var(--teal); } .lab-t { font: 700 14px var(--sans); fill: #9a6b25; }
+.row-b.hot-row { stroke: var(--teal); stroke-width: 3; }
+.emoji-t { font-size: 20px; }
+.feat-t, .lab-t, .big-rule, .tcell-t { paint-order: stroke; stroke: #f8f3e8; stroke-width: 3px; stroke-linejoin: round; }
+.tcell-t { stroke-width: 0; }

@@ -4,7 +4,7 @@ Pre-record every narration line with a neural voice, so all readers hear the sam
     pip install edge-tts
     python scripts/make_voice.py
 
-Finds every `say: '...'` in src/**/*.tsx, and writes public/audio/<fnv1a-hash>.mp3 for lines
+Finds every `say: '...'` (and quiz `ask`/`explain`/`outro`) in src/**/*.tsx, and writes public/audio/<fnv1a-hash>.mp3 for lines
 that don't have a file yet. The browser computes the same hash (src/scene/store.ts → voiceFile)
 and plays the file; if a file is missing it falls back to the browser's built-in voice.
 """
@@ -32,7 +32,7 @@ async def main():
     OUT.mkdir(parents=True, exist_ok=True)
     lines = set()
     for f in (ROOT / "src").rglob("*.tsx"):
-        lines.update(re.findall(r"say: '((?:[^'\\]|\\.)*)'", f.read_text(encoding="utf-8")))
+        lines.update(re.findall(r"\b(?:say|ask|explain|outro): '((?:[^'\\]|\\.)*)'", f.read_text(encoding="utf-8")))
     todo = [l for l in sorted(lines) if not (OUT / f"{fnv1a(l)}.mp3").exists()]
     print(f"{len(lines)} lines, {len(todo)} to record")
     sem = asyncio.Semaphore(8)  # record several lines at once

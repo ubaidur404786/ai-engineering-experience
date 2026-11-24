@@ -16,15 +16,19 @@ export interface SceneDef {
   title: string;
   cues: Cue[];
   /** Draws the diagram for the current step. Must use the 600×420 coordinate system. */
-  draw: (step: number) => ReactNode;
+  draw: (step: number, c: Controller) => ReactNode;
   /** Optional deeper explanation, hidden behind "Show the details". */
   details?: ReactNode;
   /** Optional extra content on John’s text page (e.g. a lab launcher), so the stage stays big. */
   below?: ReactNode;
+  /** Play one cue at a time and wait for the reader (used by quiz scenes). */
+  stepwise?: boolean;
+  /** One-off lines the scene may say (quiz reactions), preloaded with the page. */
+  extras?: string[];
 }
 
 export function scene(def: SceneDef): Spread {
-  const c = getController(def.id, def.cues);
+  const c = getController(def.id, def.cues, def.stepwise, def.extras);
   return {
     id: def.id, chapter: def.chapter, stage: def.stage, title: def.title,
     left: <GuidePanel c={c} def={def} />,
@@ -36,7 +40,7 @@ export function scene(def: SceneDef): Spread {
 function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
   const s = useScene(c);
   const { voiceOn, rate, autoOn } = useVoice();
-  const cue = def.cues[s.idx];
+  const cue = s.extra ?? def.cues[s.idx];
   const [open, setOpen] = useState(false);
   return (
     <div className="guide">
@@ -44,7 +48,7 @@ function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
       <h1 className="guide-title">{def.title}</h1>
       <div className="guide-body">
         <div className="speaker"><span className={`speaker-dot ${s.speaking ? 'on' : ''}`} />John{s.speaking ? ' is explaining…' : ''}</div>
-        <motion.blockquote key={s.idx} className="speech" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} aria-live="polite">
+        <motion.blockquote key={cue.say} className="speech" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} aria-live="polite">
           {cue.say}
         </motion.blockquote>
       </div>
@@ -101,8 +105,8 @@ function Status({ c }: { c: Controller }) {
 
 function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
   const s = useScene(c);
-  const cue = def.cues[s.idx];
-  const step = cue.step ?? s.idx;
+  const cue = s.extra ?? def.cues[s.idx];
+  const step = def.cues[s.idx].step ?? s.idx;
   const compact = useIsNarrow();
   const SH = stageHeight(compact);
   return (
@@ -110,7 +114,7 @@ function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
       <div className="stage-box" style={{ aspectRatio: `600 / ${SH}`, ["--sh" as string]: SH }}>
         <svg viewBox={`0 0 ${W} ${SH}`} className="stage-svg" role="img" aria-label={cue.say}>
           <rect x="0" y="0" width={W} height={H} rx="14" className="board" />
-          {def.draw(step)}
+          {def.draw(step, c)}
           <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} compact={compact} />
         </svg>
       </div>

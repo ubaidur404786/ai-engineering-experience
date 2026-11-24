@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { scene, Box, Flow } from '../../scene/Scene';
-import { LabLauncher } from '../../book/ui';
+import { Code, LabLauncher, Output } from '../../book/ui';
+import { CodeBoard, lineAt } from '../../scene/CodeBoard';
+import { quizScene } from '../../scene/quizScene';
 import { encodeReal, loadReal, preTokenize, showToken, utf8, bpeInit, bpeStep, bpePairCounts, type Tok } from './tokenizers';
 import TokenizerLab, { CompareTokenizers } from './TokenizerLab';
 import { BpeTrainer } from './BpeTrainer';
@@ -316,4 +318,87 @@ const embed = scene({
   details: <p><b>Illustrative values:</b> the ID 8887 is GPT-2’s real ID for “·tea”. The bar heights are invented for display; real embedding values are learned during training.</p>,
 });
 
+/* ============ Python, with John at the board ============ */
+
+const TOK_CODE = [
+  'from transformers import AutoTokenizer',
+  '',
+  'tokenizer = AutoTokenizer.from_pretrained("gpt2")',
+  'text = "How do we make tea?"',
+  'tokens = tokenizer.tokenize(text)   # text -> tokens',
+  'ids = tokenizer.encode(text)        # tokens -> IDs',
+  '',
+  'print("Tokens:", tokens)',
+  'print("IDs:   ", ids)',
+  'print("Back:  ", tokenizer.decode(ids))',
+  'print("Vocab: ", tokenizer.vocab_size)',
+];
+const TOK_FULL = `from transformers import AutoTokenizer
+
+# Load GPT-2's real tokenizer (vocabulary + merge rules)
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+
+text = "How do we make tea?"
+tokens = tokenizer.tokenize(text)   # text -> token strings
+ids = tokenizer.encode(text)        # token strings -> token IDs
+
+print("Tokens:", tokens)
+print("IDs:   ", ids)
+print("Back to text:", tokenizer.decode(ids))
+print("Ubaid ->", tokenizer.tokenize(" Ubaid"))
+print("Vocabulary size:", tokenizer.vocab_size)
+
+# Other algorithms, same sentence
+bert = AutoTokenizer.from_pretrained("bert-base-uncased")   # WordPiece
+t5 = AutoTokenizer.from_pretrained("t5-small")              # Unigram
+print("WordPiece:", bert.tokenize("How do we make tea? Tokenization"))
+print("Unigram:  ", t5.tokenize("How do we make tea? Tokenization"))
+
+# OpenAI's tiktoken: the GPT-4o vocabulary
+import tiktoken
+enc = tiktoken.get_encoding("o200k_base")
+print("o200k IDs:", enc.encode(text))`;
+const TOK_FULL_OUT = `Tokens: ['How', 'Ġdo', 'Ġwe', 'Ġmake', 'Ġtea', '?']
+IDs:    [2437, 466, 356, 787, 8887, 30]
+Back to text: How do we make tea?
+Ubaid -> ['ĠUb', 'aid']
+Vocabulary size: 50257
+WordPiece: ['how', 'do', 'we', 'make', 'tea', '?', 'token', '##ization']
+Unigram:   ['▁How', '▁do', '▁we', '▁make', '▁tea', '?', '▁To', 'ken', 'ization']
+o200k IDs: [5299, 621, 581, 1520, 17966, 30]`;
+
+const tokCode = scene({
+  id: 'tok-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'Tokenization, in real code.',
+  cues: [
+    { say: 'Now the same thing in real Python. I’ll stay right here and walk you through it.', point: lineAt(0), bubble: 'code with John 🤝', step: -1 },
+    { say: 'Auto tokenizer downloads the exact tokenizer GPT-2 was trained with. Same vocabulary, same merge rules, same IDs.', point: lineAt(2), bubble: 'the real one', step: 0 },
+    { say: 'tokenize splits the text into token strings. encode goes one step further, and looks up each token’s ID.', point: lineAt(4), bubble: 'text → IDs', step: 1 },
+    { say: 'Then we print the tokens, the IDs, decode them back to text, and check the vocabulary size.', point: lineAt(8), bubble: 'show me', step: 2 },
+    { say: 'And this is the real output. That funny G with a dot is how GPT-2 writes a space. Six tokens, and tea is ID eight eight eight seven, same as in the lab.', point: [300, 330], bubble: 'real output ✓', step: 3 },
+  ],
+  draw: (step) => {
+    const hot = [[], [0, 2], [4, 5], [7, 8, 9, 10], []][step + 1];
+    return <CodeBoard title="tokenize_tea.py" lines={TOK_CODE} hot={hot} outNote="real output, transformers" output={step >= 3 ? ["Tokens: ['How', 'Ġdo', 'Ġwe', 'Ġmake', 'Ġtea', '?']", 'IDs:    [2437, 466, 356, 787, 8887, 30]', 'Back:   How do we make tea?', 'Vocab:  50257'] : undefined} />;
+  },
+  details: <><p className="muted">pip install transformers tiktoken. The longer version also compares WordPiece, Unigram and GPT-4o’s vocabulary:</p><Code title="tokenize_tea.py (full)" code={TOK_FULL} /><Output note="real output">{TOK_FULL_OUT}</Output></>,
+});
+
+/* ============ Quiz, hosted by John ============ */
+
+const tokQuiz = quizScene({
+  id: 'tok-test', chapter: CH, title: 'Quick check: tokenization.',
+  outro: 'Tokenization, tested! You now know more about how an LLM reads than most people who use one every day. Next page: where to go deeper.',
+  items: [
+    { ask: 'Quiz time! Four questions, and you can skip by turning the page. First: you switch from model A to model B, but keep model A’s tokenizer. What happens?', q: 'You switch from Model A to Model B but keep Model A’s tokenizer. What happens?', options: ['Nothing, tokenizers are interchangeable', 'Model B gets IDs pointing to the wrong vocabulary rows, so its output breaks', 'It only affects cost'], answer: 1,
+      explain: 'Token ID eight eight eight seven means tea only in GPT-2’s vocabulary. In another vocabulary it’s a different token, so the model reads the wrong text.' },
+    { ask: 'Question two. Which statement is true?', q: 'Which statement is true?', options: ['Token ID 8887 is close in meaning to ID 8888', 'A token ID is an address; the meaning lives in the embedding vector it points to', 'Embeddings are lists of token IDs'], answer: 1,
+      explain: 'IDs are just row numbers. Neighbouring IDs aren’t related in meaning. The embedding vectors are where learned meaning lives.' },
+    { ask: 'Question three. You’re building a model for English, Urdu, Chinese and code. Which tokenizer fits best?', q: 'A model for English, Urdu, Chinese and code. Which tokenizer fits best?', options: ['Word-level, 50k English words', 'Byte-level subwords trained on multilingual data, with a large vocabulary', 'Character-level only'], answer: 1,
+      explain: 'Bytes can represent any script, training on multilingual data gives every language good merges, and a bigger vocabulary means fewer tokens for non-English text.' },
+    { ask: 'Last one. Why does the name Ubaid become two tokens in GPT-2?', q: 'Why does “Ubaid” become two tokens in GPT-2?', options: ['The tokenizer is broken', 'The name wasn’t frequent enough in the training text to earn its own merge', 'Names are always split'], answer: 1,
+      explain: 'BPE only creates tokens for frequent pairs. A rarer name gets built from smaller pieces that were frequent.' },
+  ],
+});
+
 export const tokenizationScenes = [journey, pipeline, rare, bpe, embed];
+export const tokenizationEnd = [tokCode, tokQuiz];

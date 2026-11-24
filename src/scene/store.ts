@@ -14,7 +14,7 @@ export interface Cue {
   step?: number;               // diagram state; defaults to the cue index
 }
 
-interface State { idx: number; playing: boolean; speaking: boolean; loading: number | null; blocked: boolean }
+interface State { idx: number; playing: boolean; speaking: boolean; loading: number | null; blocked: boolean; extra: Cue | null }
 
 let voiceOn = localStorage.getItem('voice') !== 'off';
 let rate = 1;
@@ -62,11 +62,12 @@ const controllers = new Map<string, Controller>();
 let active: Controller | null = null;
 
 export class Controller {
-  state: State = { idx: 0, playing: false, speaking: false, loading: null, blocked: false };
+  state: State = { idx: 0, playing: false, speaking: false, loading: null, blocked: false, extra: null };
   private listeners = new Set<() => void>();
   private timer: ReturnType<typeof setTimeout> | number = 0;
   private token = 0;
-  constructor(public id: string, public cues: Cue[]) {}
+  /** stepwise: play one cue, then wait for the reader (quizzes). extras: one-off lines (e.g. quiz reactions) to preload. */
+  constructor(public id: string, public cues: Cue[], public stepwise = false, public extras: string[] = []) {}
 
   subscribe = (l: () => void) => { this.listeners.add(l); return () => { this.listeners.delete(l); }; };
   get = () => this.state;
@@ -76,10 +77,10 @@ export class Controller {
   /** Page opened: download this scene's voice (with progress), then start explaining by itself. */
   async start() {
     const my = ++this.prep;
-    const todo = voiceOn ? this.cues.filter((c) => !clips.has(c.say)) : [];
+    const todo = voiceOn ? [...this.cues.map((c) => c.say), ...this.extras].filter((t) => !clips.has(t)) : [];
     if (todo.length) {
       let n = 0; this.set({ loading: 0 });
-      await Promise.all(todo.map((c) => fetchClip(c.say).then(() => { if (my === this.prep) this.set({ loading: ++n / todo.length }); })));
+      await Promise.all(todo.map((t) => fetchClip(t).then(() => { if (my === this.prep) this.set({ loading: ++n / todo.length }); })));
     }
     if (my !== this.prep) return;
     this.set({ loading: null });
@@ -91,7 +92,7 @@ export class Controller {
     if (active && active !== this) active.pause();
     active = this;
     if (this.state.idx >= this.cues.length - 1 && !this.state.playing && this.state.speaking === false && this.finished) { this.finished = false; this.set({ idx: 0 }); }
-    this.set({ playing: true, blocked: false });
+    this.set({ playing: true, blocked: false, extra: null });
     this.run();
   }
   finished = false;
@@ -100,8 +101,18 @@ export class Controller {
     const idx = Math.max(0, Math.min(this.cues.length - 1, i));
     const wasPlaying = this.state.playing;
     this.token++; clearTimeout(this.timer); stopSound();
-    this.set({ idx, speaking: false });
-    if (wasPlaying) this.run();
+    this.set({ idx, speaking: false, extra: null });
+    if (wasPlaying || this.stepwise) { this.set({ playing: true }); this.run(); }
+  }
+  /** Say a one-off line (not a cue), e.g. John reacting to a quiz answer. */
+  say(line: Cue) {
+    if (active && active !== this) active.pause();
+    active = this;
+    this.token++; clearTimeout(this.timer); stopSound();
+    const my = this.token;
+    this.set({ extra: line, playing: true, speaking: true });
+    const end = () => { if (my === this.token) this.set({ speaking: false, playing: false }); };
+    this.speak(line.say, end, my);
   }
   reset() { this.pause(); this.finished = false; this.set({ idx: 0 }); }
 
@@ -111,26 +122,30 @@ export class Controller {
     const done = () => {
       if (my !== this.token) return;
       this.set({ speaking: false });
-      if (this.state.idx < this.cues.length - 1) {
+      if (this.state.idx < this.cues.length - 1 && !this.stepwise) {
         this.timer = window.setTimeout(() => { if (my === this.token) { this.set({ idx: this.state.idx + 1 }); this.run(); } }, 300 / rate);
-      } else { this.finished = true; this.set({ playing: false }); }
+      } else { this.finished = this.state.idx === this.cues.length - 1; this.set({ playing: false }); }
     };
     this.set({ speaking: true });
+    // warm the next clip so there is no gap between sentences
+    const next = this.cues[this.state.idx + 1];
+    if (next && preloader && !clips.has(next.say)) { preloader.src = voiceFile(next.say); preloader.preload = 'auto'; }
+    this.speak(cue.say, done, my);
+  }
+
+  private speak(text: string, done: () => void, my: number) {
     const browserVoice = () => {
-      if (!('speechSynthesis' in window)) { this.timer = globalThis.setTimeout(done, Math.max(2600, cue.say.length * 55) / rate); return; }
-      const u = new SpeechSynthesisUtterance(cue.say);
+      if (!('speechSynthesis' in window)) { this.timer = globalThis.setTimeout(done, Math.max(2600, text.length * 55) / rate); return; }
+      const u = new SpeechSynthesisUtterance(text);
       const v = pickVoice(); if (v) u.voice = v;
       u.rate = 1.07 * rate; u.pitch = 1.12;
       u.onend = done; u.onerror = done;
       speechSynthesis.cancel(); speechSynthesis.speak(u);
     };
-    // warm the next clip so there is no gap between sentences
-    const next = this.cues[this.state.idx + 1];
-    if (next && preloader && !clips.has(next.say)) { preloader.src = voiceFile(next.say); preloader.preload = 'auto'; }
     if (voiceOn && player) {
       player.onended = done;
       player.onerror = () => { if (my === this.token) browserVoice(); };
-      player.src = clipUrl(cue.say);
+      player.src = clipUrl(text);
       player.playbackRate = rate;
       player.play().catch((e: DOMException) => {
         if (my !== this.token) return;
@@ -139,14 +154,14 @@ export class Controller {
       });
     } else {
       // Silent mode: hold each subtitle long enough to read it.
-      this.timer = window.setTimeout(done, Math.max(2600, cue.say.length * 55) / rate);
+      this.timer = window.setTimeout(done, Math.max(2600, text.length * 55) / rate);
     }
   }
 }
 
-export function getController(id: string, cues: Cue[]) {
+export function getController(id: string, cues: Cue[], stepwise = false, extras: string[] = []) {
   let c = controllers.get(id);
-  if (!c) { c = new Controller(id, cues); controllers.set(id, c); }
+  if (!c) { c = new Controller(id, cues, stepwise, extras); controllers.set(id, c); }
   return c;
 }
 export function useScene(c: Controller) { return useSyncExternalStore(c.subscribe, c.get); }

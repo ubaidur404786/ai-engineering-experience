@@ -28,6 +28,8 @@
    - Reuse `Box`, `Flow` (moving data particles) from `src/scene/Scene.tsx`; styles in `src/scene/scene.css`.
 2. Add the scenes to `SPREADS` in `src/chapters/registry.ts` (order = reading order). The chapter id must exist in `src/data/curriculum.ts` (then Contents marks it ready).
 3. Record the voice: `python scripts/make_voice.py` (records only new lines, deletes stale clips) → `public/audio/*.mp3`.
+   - **Code pages are scenes too** (John never leaves): `CodeBoard` from `src/scene/CodeBoard.tsx` draws ≤ 13–15 short lines (≤ 58 chars) on the stage, `hot` highlights the lines of the current cue, `point: lineAt(i)` aims the stick at the right margin of line i, and the final cue shows the real `output`. The full copyable code goes in `details` (`<Code>` + `<Output>`). Example: `data-python`.
+   - **Quizzes are hosted by John:** `quizScene({ id, chapter, title, outro, items: [{ ask, q, options, answer, explain }] })` from `src/scene/quizScene.tsx`. He reads `ask`, waits for the tap (stepwise scene), reacts in his bubble (✓/✗) and speaks `explain`, then "Next question ›", then a score page. The first `ask` says the quiz can be skipped. `ask`/`explain`/`outro` are recorded by make_voice.py.
 4. `npx tsc -b`, check in the browser (`npm run dev`, port 5173), commit, push.
 
 ## Layout rules for diagrams (checked in Chrome, laptop 1536×674 and phone 375×812)
@@ -46,10 +48,11 @@
 | Book engine | cover, 3D page flip, Contents drawer, progress, mobile swipe (diagram first on phones), lab overlay |
 | Welcome (3 scenes) | Meet John (not alone, two pages, stop me anytime) · Why this book isn't boring · Skill journey (what you can do at the end) |
 | Part 0 complete | two sides, four roles, AI⊃ML⊃DL⊃GenAI, foundation models + LLM/SLM sizes, open vs closed, model → app layers, lifecycle loop, quiz (skippable), What's next scene |
-| Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python page, quiz, references |
+| Part 1 · Data | why data, structured vs unstructured, features & labels, cleaning, train/val/test, Python at the board (pandas + scikit-learn, real output), John-hosted quiz, What's next |
+| Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python at the board, John-hosted quiz, references |
 
 ## Next chapter
-Reading order next: **Part 1 · Foundations**, starting with chapter `data` ("Data: the raw material"), then `learning-types`, `neuron`, `learning`, `fit`.
+Reading order next: **Part 1 · Foundations**, chapter `learning-types` (supervised, unsupervised, self-supervised), then `neuron`, `learning`, `fit`. Insert each after `dataScenes` in registry.ts and update the `data-next` scene's "next" box.
 After Part 1, continue Part 2 with `embeddings-in` (token IDs → vectors); the tokenization chapter already ends by promising it.
 
 ## Known gaps / ideas
