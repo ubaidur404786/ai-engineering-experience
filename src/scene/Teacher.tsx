@@ -9,12 +9,13 @@ import { motion } from 'motion/react';
  * Coordinates: the stage is 600 wide; the diagram uses y 0–420, the floor is y 420–590.
  */
 export const FLOOR_TOP = 420;
-const S = 1.15;           // body scale (kept small so the diagram gets most of the page)
-const FEET_Y = 580;
-export const STAGE_H = 590; // total stage height: diagram 0–420 + floor
-const SHOULDER_DY = -94 * S; // shoulder height above feet
+/** Body size + floor height. Phones use a smaller John so the diagram gets more of the screen. */
+const SIZES = { normal: { S: 1.15, FEET_Y: 580, H: 590 }, compact: { S: 0.8, FEET_Y: 535, H: 545 } };
+export const stageHeight = (compact: boolean) => SIZES[compact ? 'compact' : 'normal'].H;
 
-export default function Teacher({ target, talking, comment }: { target?: [number, number]; talking: boolean; comment?: string }) {
+export default function Teacher({ target, talking, comment, compact = false }: { target?: [number, number]; talking: boolean; comment?: string; compact?: boolean }) {
+  const { S, FEET_Y } = SIZES[compact ? 'compact' : 'normal'];
+  const SHOULDER_DY = -94 * S; // shoulder height above feet
   // Stand beside the target, not under it, so the stick comes in at an angle.
   const tx = target?.[0] ?? 300;
   const faceRight = tx > 300 ? true : false;
@@ -80,7 +81,7 @@ export default function Teacher({ target, talking, comment }: { target?: [number
       {/* what he's saying about this spot */}
       {comment && (
         <motion.g key={comment} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <foreignObject x={bx} y={FLOOR_TOP + 40} width={bubbleW} height="90">
+          <foreignObject x={bx} y={FEET_Y - (compact ? 95 : 120)} width={bubbleW} height="90">
             <div style={{ textAlign: faceRight ? 'right' : 'left' }}>
               <div className={`say-bubble ${faceRight ? 'tail-right' : 'tail-left'}`} style={{ textAlign: 'left' }}>{comment}</div>
             </div>

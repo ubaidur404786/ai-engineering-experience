@@ -234,6 +234,15 @@ print("Unigram:  ", t5.tokenize("How do we make tea? Tokenization"))
 import tiktoken
 enc = tiktoken.get_encoding("o200k_base")
 print("o200k IDs:", enc.encode(text))`} />
+      </>
+    ),
+  },
+  {
+    id: 'tok-python-out', chapter: CH, stage: 'python', title: 'Tokenization in Python: the output',
+    left: (
+      <>
+        <Kicker>Implement with Python</Kicker>
+        <h1>What it prints.</h1>
         <Output note="real output, run with transformers + tiktoken">{`Tokens: ['How', 'Ġdo', 'Ġwe', 'Ġmake', 'Ġtea', '?']
 IDs:    [2437, 466, 356, 787, 8887, 30]
 Back to text: How do we make tea?
@@ -242,7 +251,13 @@ Vocabulary size: 50257
 WordPiece: ['how', 'do', 'we', 'make', 'tea', '?', 'token', '##ization']
 Unigram:   ['▁How', '▁do', '▁we', '▁make', '▁tea', '?', '▁To', 'ken', 'ization']
 o200k IDs: [5299, 621, 581, 1520, 17966, 30]`}</Output>
-        <p className="muted">Open the Tokenizer Lab with GPT-2 selected: the IDs in stage 6 are the same numbers. <code>bert.encode()</code> would also add special tokens <code>[CLS]</code>=101 and <code>[SEP]</code>=102 around the sentence.</p>
+              </>
+    ),
+    right: (
+      <>
+        <Narration>
+          <p className="muted">Open the Tokenizer Lab with GPT-2 selected: the IDs in stage 6 are the same numbers. <code>bert.encode()</code> would also add special tokens <code>[CLS]</code>=101 and <code>[SEP]</code>=102 around the sentence.</p>
+        </Narration>
       </>
     ),
   },

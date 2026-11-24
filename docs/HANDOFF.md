@@ -31,7 +31,10 @@
 4. `npx tsc -b`, check in the browser (`npm run dev`, port 5173), commit, push.
 
 ## Layout rules for diagrams (checked in Chrome, laptop 1536×674 and phone 375×812)
-- Stage = 600×590 SVG: diagram board y 0–420, John's floor y 420–590 (`STAGE_H` in Teacher.tsx). The stage always fits the page height on desktop (no scrolling, no cropped legs).
+- **No page ever scrolls.** Every page is wrapped in `src/book/Fit.tsx`: content taller than the page is scaled down to fit (minimum 62%; below that it scrolls as a last resort). If a page needs < ~80%, split it into another spread (e.g. `tok-python` + `tok-python-out`).
+- Phones show one page per screen: a scene = stage + subtitle + controls ("📝 Text" swaps to John's page); other spreads = left page, then right page.
+- `below` (lab launchers) goes on John's text page, never under the stage.
+- Stage = 600×590 SVG on laptops (diagram y 0–420, floor below); on phones John is smaller and the stage is 600×545 (`stageHeight()` in Teacher.tsx). The stage always fits the page height on desktop (no scrolling, no cropped legs).
 - Keep every label inside x 20–580, y 20–410. Long bars/charts: compute widths so the value label still ends before x 590.
 - Text classes: `slabel` (titles), `ssub paper` / `ssub night` (sub-lines on light / dark boxes), `chip-t sm`, `cap`, `ok`/`warn`. Light-background classes get a paper halo automatically so dashed flows and the stick don't cut through words. Never put halo classes on dark fills (use `ssub night`).
 - Small circles (r < 60) hold at most a 1-word label + 2 short lines; check that they don't overlap.

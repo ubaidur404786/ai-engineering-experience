@@ -5,6 +5,8 @@ import { CURRICULUM } from '../data/curriculum';
 import { STAGE_LABEL } from './types';
 import { LabContext, LabOverlay } from './Lab';
 import { startScene, stopAllScenes } from '../scene/store';
+import { useIsNarrow } from './useIsNarrow';
+import Fit from './Fit';
 
 const FLIP_MS = 900;
 
@@ -14,24 +16,15 @@ function indexFromHash() {
   return i < 0 ? 0 : i;
 }
 
-function useIsNarrow() {
-  const q = '(max-width: 900px)';
-  const [narrow, set] = useState(() => matchMedia(q).matches);
-  useEffect(() => {
-    const mq = matchMedia(q); const on = () => set(mq.matches);
-    mq.addEventListener('change', on); return () => mq.removeEventListener('change', on);
-  }, []);
-  return narrow;
-}
-
 export default function Book({ onClose }: { onClose: () => void }) {
   const [index, setIndex] = useState(indexFromHash);
+  const [half, setHalf] = useState(0);   // phones: 0 = left page, 1 = right page of a two-page spread
   const [flip, setFlip] = useState<{ from: number; to: number } | null>(null);
   const [tocOpen, setTocOpen] = useState(false);
   const [lab, setLab] = useState<{ title: string; body: ReactNode } | null>(null);
   const [visited, setVisited] = useState<Set<string>>(() => new Set(JSON.parse(localStorage.getItem('visited') || '[]')));
   const narrow = useIsNarrow();
-  const [showText, setShowText] = useState(() => localStorage.getItem('showText') !== 'off');
+  const [showText, setShowText] = useState(() => localStorage.getItem('showText') === 'on');
   const toggleText = () => setShowText((v) => { localStorage.setItem('showText', v ? 'off' : 'on'); return !v; });
   const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -54,21 +47,30 @@ export default function Book({ onClose }: { onClose: () => void }) {
     addEventListener('hashchange', on); return () => removeEventListener('hashchange', on);
   }, []);
 
-  const go = useCallback((to: number) => {
+  const go = useCallback((to: number, toHalf = 0) => {
     if (to < 0 || to >= SPREADS.length || to === index || flip) return;
+    setHalf(toHalf);
     if (narrow || reduce) { setIndex(to); return; }   // mobile + reduced motion: simple slide/fade instead of a 3D flip
     setFlip({ from: index, to });
     setTimeout(() => { setIndex(to); setFlip(null); }, FLIP_MS);
   }, [index, flip, narrow, reduce]);
 
+  // Phones show one page at a time: scenes are one screen, other spreads are two pages (left, then right).
+  const twoPages = narrow && !spread.visualFirst;
+  const next = useCallback(() => { if (twoPages && half === 0) setHalf(1); else go(index + 1); }, [twoPages, half, go, index]);
+  const prev = useCallback(() => {
+    if (twoPages && half === 1) { setHalf(0); return; }
+    const p = SPREADS[index - 1]; if (p) go(index - 1, narrow && !p.visualFirst ? 1 : 0);
+  }, [twoPages, half, go, index, narrow]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (lab || (e.target as HTMLElement).closest('input, textarea, select, [contenteditable]')) return;
-      if (e.key === 'ArrowRight') go(index + 1);
-      if (e.key === 'ArrowLeft') go(index - 1);
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
     };
     addEventListener('keydown', onKey); return () => removeEventListener('keydown', onKey);
-  }, [go, index, lab]);
+  }, [next, prev, lab]);
 
   const chapterSpreads = SPREADS.filter((s) => s.chapter === spread.chapter);
   const posInChapter = chapterSpreads.indexOf(spread) + 1;
@@ -85,7 +87,7 @@ export default function Book({ onClose }: { onClose: () => void }) {
           </div>
           {narrow && spread.visualFirst && (
             <button className={`btn-ghost text-toggle ${showText ? 'on' : ''}`} onClick={toggleText} aria-pressed={showText} title="Show or hide John’s text page">
-              📝 {showText ? 'Hide text' : 'Text'}
+              {showText ? '🎬 Stage' : '📝 Text'}
             </button>
           )}
           <div className="progress" role="progressbar" aria-label="Chapter progress" aria-valuemin={1} aria-valuemax={chapterSpreads.length} aria-valuenow={posInChapter}>
@@ -94,7 +96,7 @@ export default function Book({ onClose }: { onClose: () => void }) {
         </nav>
 
         {narrow ? (
-          <MobileBook index={index} go={go} showText={showText} />
+          <MobileBook index={index} half={half} next={next} prev={prev} showText={showText} />
         ) : (
           <div className="book" aria-live="polite">
             <BookSpread index={flip ? (flip.to > flip.from ? flip.from : flip.to) : index} side="left" />
@@ -106,9 +108,9 @@ export default function Book({ onClose }: { onClose: () => void }) {
 
         {narrow ? (
           <nav className="fab-nav" aria-label="Turn page">
-            <button className="fab" onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous page">‹</button>
+            <button className="fab" onClick={prev} disabled={index === 0 && half === 0} aria-label="Previous page">‹</button>
             <span className="fab-num">{index + 1} / {SPREADS.length}</span>
-            <button className="fab next" onClick={() => go(index + 1)} disabled={index === SPREADS.length - 1} aria-label="Next page">›</button>
+            <button className="fab next" onClick={next} disabled={index === SPREADS.length - 1 && (!twoPages || half === 1)} aria-label="Next page">›</button>
           </nav>
         ) : (
           <footer className="pager">
@@ -133,7 +135,7 @@ function BookSpread({ index, side }: { index: number; side: 'left' | 'right' }) 
   const s = SPREADS[index];
   return (
     <section className={`page page-${side}`} aria-label={side === 'left' ? s.title : `${s.title}, visual`}>
-      <div className="page-scroll">{side === 'left' ? s.left : s.right}</div>
+      <div className="page-scroll"><Fit>{side === 'left' ? s.left : s.right}</Fit></div>
       <div className="page-folio" aria-hidden="true">{index * 2 + (side === 'left' ? 1 : 2)}</div>
     </section>
   );
@@ -156,30 +158,31 @@ function Leaf({ flip }: { flip: { from: number; to: number } }) {
       transition={{ duration: FLIP_MS / 1000, ease: [0.45, 0.05, 0.25, 1] }}
       aria-hidden="true"
     >
-      <div className="leaf-face leaf-front"><div className="page-scroll">{front}</div><div className="leaf-shade" /></div>
-      <div className="leaf-face leaf-backface"><div className="page-scroll">{back}</div><div className="leaf-shade" /></div>
+      <div className="leaf-face leaf-front"><div className="page-scroll"><Fit>{front}</Fit></div><div className="leaf-shade" /></div>
+      <div className="leaf-face leaf-backface"><div className="page-scroll"><Fit>{back}</Fit></div><div className="leaf-shade" /></div>
     </motion.div>
   );
 }
 
-/** Mobile: one column (diagram first for scenes), swipe left/right to turn. John's text page can be hidden. */
-function MobileBook({ index, go, showText }: { index: number; go: (i: number) => void; showText: boolean }) {
+/**
+ * Phones: one page fills the screen, never scrolls. A narrated scene is one page (stage + subtitle + controls;
+ * "Text" swaps to John's text page). Other spreads are two pages, left then right. Swipe or ‹ › to turn.
+ */
+function MobileBook({ index, half, next, prev, showText }: { index: number; half: number; next: () => void; prev: () => void; showText: boolean }) {
   const s = SPREADS[index];
-  const hideText = s.visualFirst && !showText;
+  const content = s.visualFirst ? (showText ? s.left : s.right) : half === 0 ? s.left : s.right;
+  const key = `${s.id}-${s.visualFirst ? (showText ? 't' : 's') : half}`;
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
-        key={s.id}
-        className={`mobile-page ${hideText ? 'text-hidden' : ''}`}
+        key={key}
+        className={`mobile-page ${s.visualFirst && !showText ? 'text-hidden' : ''}`}
         initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.25 }}
         drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.15} dragDirectionLock
-        onDragEnd={(_, info) => { if (info.offset.x < -80) go(index + 1); else if (info.offset.x > 80) go(index - 1); }}
+        onDragEnd={(_, info) => { if (info.offset.x < -80) next(); else if (info.offset.x > 80) prev(); }}
       >
-        <div className="page-scroll">
-          {s.visualFirst ? s.right : s.left}
-          {!hideText && <><hr className="page-sep" />{s.visualFirst ? s.left : s.right}</>}
-        </div>
+        <div className="page-scroll"><Fit>{content}</Fit></div>
       </motion.div>
     </AnimatePresence>
   );

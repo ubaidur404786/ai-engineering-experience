@@ -13,7 +13,7 @@ export const SPREADS: Spread[] = [
   ...welcomeScenes,
   ...part0,
   ...tokenizationScenes,
-  ...keep(['tok-python', 'tok-test', 'tok-explore']),
+  ...keep(['tok-python', 'tok-python-out', 'tok-test', 'tok-explore']),
 ];
 
 export const CHAPTER_TITLES: Record<string, string> = Object.fromEntries(

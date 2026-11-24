@@ -303,7 +303,7 @@ button.toc-item:hover { background: var(--night-3); }
 .skip-note { font-style: italic; color: var(--ink-2); }
 @media (max-width: 900px) {
   /* keep the stage, subtitle and controls on one screen */
-  .mobile-page .stage-box { width: min(100%, calc(56dvh * 600 / 590)); margin: 0 auto; }
+  .mobile-page .stage-box { width: min(100%, calc(56dvh * 600 / var(--sh, 590))); margin: 0 auto; }
 }
 @media (max-width: 900px) { .mobile-page .stage-panel, .mobile-page .guide { min-height: 0; } }
 
@@ -311,7 +311,7 @@ button.toc-item:hover { background: var(--night-3); }
 @media (min-width: 901px) {
   .page-right .page-scroll, .leaf-face .page-scroll { container-type: size; }
   .page-right .stage-panel { min-height: 100%; justify-content: center; }
-  .page-right .stage-box { width: min(100%, calc((100cqh - 40px) * 600 / 590)); margin: 0 auto; }
+  .page-right .stage-box { width: min(100%, calc((100cqh - 40px) * 600 / var(--sh, 590))); margin: 0 auto; }
   .page-left .guide { justify-content: center; }
 }
 @media (min-width: 901px) { .page-right .page-scroll { padding: 20px 24px 30px; } }
@@ -321,3 +321,21 @@ button.toc-item:hover { background: var(--night-3); }
   .crumb { flex: 1; min-width: 0; margin-left: 2px; }
   .crumb-ch { font-size: .9rem; }
 }
+
+/* ---------- Fit-to-page: pages never scroll; long content is scaled down to fit ---------- */
+.page-scroll { overflow: hidden; }
+.fit { height: 100%; overflow: hidden; }
+.fit.fit-scroll { overflow-y: auto; }
+.fit-inner { transform-origin: 0 0; display: flex; flex-direction: column; }
+.fit-inner > .guide, .fit-inner > .stage-panel { flex: 1; min-height: 0 !important; }
+@media (max-width: 900px) {
+  .mobile-page { height: 100%; }
+  .mobile-page .page-scroll { padding: 12px 14px 78px; container-type: size; }
+  .mobile-page.text-hidden .page-scroll { padding: 6px 4px 78px; }
+  /* stage gets all the height left after subtitle (~4 lines) + controls */
+  .mobile-page .stage-box { width: min(100%, calc((100cqh - 210px) * 600 / var(--sh, 545))); }
+  .mobile-page .stage-panel { justify-content: flex-start; gap: 6px; }
+  .text-hidden .stage-sub { margin: 0 6px; font-size: .98rem; }
+  .text-hidden .mini-ctrl { margin: 4px 6px 0; }
+}
+@media (max-width: 900px) { pre, pre code { white-space: pre-wrap !important; overflow-wrap: anywhere; overflow-x: hidden !important; } }

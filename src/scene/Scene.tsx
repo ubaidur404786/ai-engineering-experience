@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import Teacher, { STAGE_H } from './Teacher';
+import Teacher, { stageHeight } from './Teacher';
+import { useIsNarrow } from '../book/useIsNarrow';
 import { getController, useScene, useVoice, voiceStore, type Controller, type Cue } from './store';
 import type { Spread, Stage } from '../book/types';
 import './scene.css';
@@ -18,7 +19,7 @@ export interface SceneDef {
   draw: (step: number) => ReactNode;
   /** Optional deeper explanation, hidden behind "Show the details". */
   details?: ReactNode;
-  /** Optional extra content under the stage (e.g. a lab launcher). */
+  /** Optional extra content on John’s text page (e.g. a lab launcher), so the stage stays big. */
   below?: ReactNode;
 }
 
@@ -56,6 +57,7 @@ function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
         <button className={`chip-btn ${autoOn ? 'on' : ''}`} onClick={() => voiceStore.setAuto(!autoOn)} aria-pressed={autoOn} title="Start explaining as soon as a page opens">{autoOn ? '⏯ Auto-start on' : '⏯ Auto-start off'}</button>
         {def.details && <button className="chip-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>{open ? 'Hide details' : '📖 Show the details'}</button>}
       </div>
+      {def.below}
       <AnimatePresence>
         {open && def.details && (
           <motion.div className="details" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>{def.details}</motion.div>
@@ -101,18 +103,19 @@ function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
   const s = useScene(c);
   const cue = def.cues[s.idx];
   const step = cue.step ?? s.idx;
+  const compact = useIsNarrow();
+  const SH = stageHeight(compact);
   return (
     <div className="stage-panel">
-      <div className="stage-box">
-        <svg viewBox={`0 0 ${W} ${STAGE_H}`} className="stage-svg" role="img" aria-label={cue.say}>
+      <div className="stage-box" style={{ aspectRatio: `600 / ${SH}`, ["--sh" as string]: SH }}>
+        <svg viewBox={`0 0 ${W} ${SH}`} className="stage-svg" role="img" aria-label={cue.say}>
           <rect x="0" y="0" width={W} height={H} rx="14" className="board" />
           {def.draw(step)}
-          <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} />
+          <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} compact={compact} />
         </svg>
       </div>
       <div className="stage-sub" aria-hidden="true">{cue.say}</div>
       <div className="mini-ctrl"><Controls c={c} cues={def.cues} /></div>
-      {def.below}
     </div>
   );
 }
