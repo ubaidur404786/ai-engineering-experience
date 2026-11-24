@@ -21,7 +21,7 @@
 .details p { font-size: .95rem !important; }
 
 .stage-panel { display: flex; flex-direction: column; gap: 10px; min-height: 100%; justify-content: center; }
-.stage-box { position: relative; width: 100%; aspect-ratio: 600 / 660; }
+.stage-box { position: relative; width: 100%; aspect-ratio: 600 / 590; }
 .board { fill: #f8f3e8; stroke: var(--paper-edge); }
 .stage-svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .stage-sub, .mini-ctrl { display: none; }
@@ -138,3 +138,12 @@
 .loadbar span { position: relative; z-index: 1; display: block; text-align: center; font: 600 .78rem/26px var(--sans); color: var(--ink); }
 .loadbar i { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--teal) 45%, transparent); transition: width .2s; }
 .hint.tap { border: 0; background: var(--brass); color: #1b1408; border-radius: 999px; padding: 6px 12px; font-style: normal; text-align: left; animation: ring 2.4s infinite; }
+
+/* Readability: slightly larger diagram text, with a paper-coloured halo so dashed paths and the stick never cut through words */
+.cap { font-size: 14px; }
+.ssub { font-size: 13px; }
+.chip-t.sm { font-size: 13px; font-weight: 600; }
+.ring-t { font-size: 14px; }
+.zone-t { font-size: 13px; }
+.cap, .ssub.paper, .chip-t, .ring-t, .zone-t, .ok, .warn, .hello, .side-t { paint-order: stroke; stroke: #f8f3e8; stroke-width: 4px; stroke-linejoin: round; }
+.ring3 + .ring-t { stroke: none; }

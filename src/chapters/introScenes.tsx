@@ -117,14 +117,14 @@ function NestDiagram({ step }: { step: number }) {
       {rings.map((g, i) => (
         <motion.g key={g.label} initial={false} animate={{ opacity: step >= i ? 1 : 0.12, scale: step === i ? 1.02 : 1 }} style={{ originX: '300px', originY: '210px' }}>
           <circle cx="300" cy="210" r={g.r} className={`ring ${g.cls}`} />
-          <text x="300" y={210 - g.r + (i === 3 ? 50 : 24)} textAnchor="middle" className="ring-t">{g.label}</text>
+          <text x="300" y={i === 3 ? 202 : 210 - g.r + 24} textAnchor="middle" className="ring-t">{g.label}</text>
           {g.sub && <text x="300" y={210 - g.r + 40} textAnchor="middle" className="ssub paper">{g.sub}</text>}
         </motion.g>
       ))}
       {step >= 4 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <text x="300" y="230" textAnchor="middle" className="ssub paper">creates new text,</text>
-          <text x="300" y="244" textAnchor="middle" className="ssub paper">images, audio</text>
+          <text x="300" y="222" textAnchor="middle" className="ssub night">creates text,</text>
+          <text x="300" y="236" textAnchor="middle" className="ssub night">images, audio</text>
         </motion.g>
       )}
     </g>
@@ -175,7 +175,7 @@ function FoundationDiagram({ step }: { step: number }) {
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <text x="20" y="34" className="cap">size in billions of parameters (log scale)</text>
           {SIZES.map((m, i) => {
-            const w = 40 + (Math.log10(m.b) + 0.3) * 150; const slm = m.b < 10;
+            const w = 30 + (Math.log10(m.b) + 0.3) * 118; const slm = m.b < 10;
             return (
               <g key={m.name}>
                 <text x="20" y={78 + i * 56} className="chip-t sm">{m.name}</text>
@@ -186,11 +186,11 @@ function FoundationDiagram({ step }: { step: number }) {
           })}
           {step >= 3 && <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <rect x="160" y="50" width="420" height="160" rx="10" className="zone slm" />
-            <text x="570" y="70" textAnchor="end" className="zone-t">SLMs: laptop / phone friendly</text>
+            <text x="575" y="44" textAnchor="end" className="zone-t">SLMs: laptop / phone friendly</text>
           </motion.g>}
           {step >= 4 && <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <rect x="160" y="214" width="420" height="106" rx="10" className="zone llm" />
-            <text x="570" y="234" textAnchor="end" className="zone-t">LLMs: need serious GPUs</text>
+            <text x="575" y="340" textAnchor="end" className="zone-t">LLMs: need serious GPUs</text>
           </motion.g>}
         </motion.g>
       )}
@@ -359,7 +359,7 @@ const part0Quiz: Spread = {
     <>
       <Kicker>Test yourself</Kicker>
       <h1>Quick check.</h1>
-      <p className="skip-note">Four questions, no pressure. Not in the mood? Hit <b>Next →</b> to skip. John won’t tell anyone.</p>
+      <p className="skip-note">Four questions, no pressure. Not in the mood? Just turn the page to skip. John won’t tell anyone.</p>
       <Quiz items={[
         { q: 'A spam filter uses hand-written rules like “contains FREE MONEY”. What is it?', options: ['Deep learning', 'AI, but not machine learning', 'Generative AI'], answer: 1, why: 'Rules written by a person still count as AI, but nothing was learned from data, so it isn’t ML.' },
         { q: 'Your company can’t send customer data outside its servers. Which model type fits best?', options: ['A closed model via API', 'An open-weight model you host yourself', 'It doesn’t matter'], answer: 1, why: 'With open weights the model runs on your own hardware, so the data never leaves.' },

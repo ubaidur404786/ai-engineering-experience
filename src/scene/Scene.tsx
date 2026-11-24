@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import Teacher from './Teacher';
+import Teacher, { STAGE_H } from './Teacher';
 import { getController, useScene, useVoice, voiceStore, type Controller, type Cue } from './store';
 import type { Spread, Stage } from '../book/types';
 import './scene.css';
@@ -104,7 +104,7 @@ function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
   return (
     <div className="stage-panel">
       <div className="stage-box">
-        <svg viewBox={`0 0 ${W} ${H + 240}`} className="stage-svg" role="img" aria-label={cue.say}>
+        <svg viewBox={`0 0 ${W} ${STAGE_H}`} className="stage-svg" role="img" aria-label={cue.say}>
           <rect x="0" y="0" width={W} height={H} rx="14" className="board" />
           {def.draw(step)}
           <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} />

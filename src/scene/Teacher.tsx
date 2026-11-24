@@ -6,11 +6,12 @@ import { motion } from 'motion/react';
  * He stands on a "floor" strip BELOW the diagram, so he never covers any text or drawing.
  * He walks to the spot under what he is explaining and reaches up with a telescopic pointer stick.
  *
- * Coordinates: the stage is 600 wide; the diagram uses y 0–420, the floor is y 420–660.
+ * Coordinates: the stage is 600 wide; the diagram uses y 0–420, the floor is y 420–590.
  */
 export const FLOOR_TOP = 420;
-const S = 1.6;            // body scale
-const FEET_Y = 650;
+const S = 1.15;           // body scale (kept small so the diagram gets most of the page)
+const FEET_Y = 580;
+export const STAGE_H = 590; // total stage height: diagram 0–420 + floor
 const SHOULDER_DY = -94 * S; // shoulder height above feet
 
 export default function Teacher({ target, talking, comment }: { target?: [number, number]; talking: boolean; comment?: string }) {

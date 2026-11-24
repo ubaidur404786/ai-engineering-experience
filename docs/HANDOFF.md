@@ -30,6 +30,13 @@
 3. Record the voice: `python scripts/make_voice.py` (records only new lines, deletes stale clips) → `public/audio/*.mp3`.
 4. `npx tsc -b`, check in the browser (`npm run dev`, port 5173), commit, push.
 
+## Layout rules for diagrams (checked in Chrome, laptop 1536×674 and phone 375×812)
+- Stage = 600×590 SVG: diagram board y 0–420, John's floor y 420–590 (`STAGE_H` in Teacher.tsx). The stage always fits the page height on desktop (no scrolling, no cropped legs).
+- Keep every label inside x 20–580, y 20–410. Long bars/charts: compute widths so the value label still ends before x 590.
+- Text classes: `slabel` (titles), `ssub paper` / `ssub night` (sub-lines on light / dark boxes), `chip-t sm`, `cap`, `ok`/`warn`. Light-background classes get a paper halo automatically so dashed flows and the stick don't cut through words. Never put halo classes on dark fills (use `ssub night`).
+- Small circles (r < 60) hold at most a 1-word label + 2 short lines; check that they don't overlap.
+- After a new chapter: step through every cue at both sizes (Chrome window + phone emulation) before pushing. Test links like `#p/<id>` work (hashchange is handled).
+
 ## Status
 | Done | Notes |
 |---|---|

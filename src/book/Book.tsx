@@ -48,6 +48,12 @@ export default function Book({ onClose }: { onClose: () => void }) {
     document.querySelector('.page-scroll')?.scrollTo(0, 0);
   }, [spread.id]);
 
+  // links like #p/roles (or the browser's back button) open that page
+  useEffect(() => {
+    const on = () => setIndex(indexFromHash());
+    addEventListener('hashchange', on); return () => removeEventListener('hashchange', on);
+  }, []);
+
   const go = useCallback((to: number) => {
     if (to < 0 || to >= SPREADS.length || to === index || flip) return;
     if (narrow || reduce) { setIndex(to); return; }   // mobile + reduced motion: simple slide/fade instead of a 3D flip
@@ -72,14 +78,14 @@ export default function Book({ onClose }: { onClose: () => void }) {
       <motion.div className="book-shell" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
         <nav className="topbar" aria-label="Book navigation">
           <button className="btn-ghost" onClick={onClose} title="Close the book">✕ <span className="hide-sm">Cover</span></button>
-          <button className="btn-ghost" onClick={() => setTocOpen(true)} aria-expanded={tocOpen}>☰ Contents</button>
+          <button className="btn-ghost" onClick={() => setTocOpen(true)} aria-expanded={tocOpen} aria-label="Contents">☰ <span className="hide-sm">Contents</span></button>
           <div className="crumb" aria-live="polite">
             <span className="crumb-ch">{CHAPTER_TITLES[spread.chapter]}</span>
             {spread.stage && <span className="crumb-stage">{STAGE_LABEL[spread.stage]}</span>}
           </div>
           {narrow && spread.visualFirst && (
             <button className={`btn-ghost text-toggle ${showText ? 'on' : ''}`} onClick={toggleText} aria-pressed={showText} title="Show or hide John’s text page">
-              {showText ? '📝 Hide text' : '📝 Show text'}
+              📝 {showText ? 'Hide text' : 'Text'}
             </button>
           )}
           <div className="progress" role="progressbar" aria-label="Chapter progress" aria-valuemin={1} aria-valuemax={chapterSpreads.length} aria-valuenow={posInChapter}>
