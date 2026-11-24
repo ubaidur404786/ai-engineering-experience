@@ -42,7 +42,7 @@ function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
       <p className="kicker">{def.kicker}</p>
       <h1 className="guide-title">{def.title}</h1>
       <div className="guide-body">
-        <div className="speaker"><span className={`speaker-dot ${s.speaking ? 'on' : ''}`} />Zayd{s.speaking ? ' is explaining…' : ''}</div>
+        <div className="speaker"><span className={`speaker-dot ${s.speaking ? 'on' : ''}`} />John{s.speaking ? ' is explaining…' : ''}</div>
         <motion.blockquote key={s.idx} className="speech" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} aria-live="polite">
           {cue.say}
         </motion.blockquote>

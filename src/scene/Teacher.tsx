@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 /**
- * "Zayd": a young teacher, full body, drawn in SVG inside the stage.
+ * "John": a young teacher, full body, drawn in SVG inside the stage.
  * He stands on a "floor" strip BELOW the diagram, so he never covers any text or drawing.
  * He walks to the spot under what he is explaining and reaches up with a telescopic pointer stick.
  *
@@ -33,14 +33,24 @@ export default function Teacher({ target, talking, comment }: { target?: [number
 
   const walkDur = 0.3 + Math.abs(desired - x) * 0.003;
   const dir = faceRight ? 1 : -1;
-  const shoulder: [number, number] = [x + dir * 14 * S, FEET_Y + SHOULDER_DY];
-  const aim = target ?? [x + dir * 80, FEET_Y - 150];
-  const ang = Math.atan2(aim[1] - shoulder[1], aim[0] - shoulder[0]);
-  const hand: [number, number] = [shoulder[0] + Math.cos(ang) * 40 * S, shoulder[1] + Math.sin(ang) * 40 * S];
-  const tipGap = 22;
-  const len = Math.max(30, Math.hypot(aim[0] - hand[0], aim[1] - hand[1]) - tipGap);
-  const tip: [number, number] = [hand[0] + Math.cos(ang) * len, hand[1] + Math.sin(ang) * len];
   const pointing = !!target && !walking;
+
+  // Everything for the arm is computed in BODY-LOCAL coordinates (origin = feet centre x),
+  // and drawn inside the moving group, so arm, hand and stick always travel with the body.
+  const shoulder: [number, number] = [dir * 15 * S, FEET_Y + SHOULDER_DY];
+  const aimW = target ?? [x + dir * 60, FEET_Y - 40];
+  const aim: [number, number] = pointing ? [aimW[0] - desired, aimW[1]] : [dir * 70, FEET_Y - 10]; // idle: stick held low
+  const ang = Math.atan2(aim[1] - shoulder[1], aim[0] - shoulder[0]);
+  const UA = 23 * S, FA = 21 * S;                       // upper arm, forearm
+  const reach = pointing ? (UA + FA) * 0.92 : (UA + FA) * 0.7;
+  const hand: [number, number] = [shoulder[0] + Math.cos(ang) * reach, shoulder[1] + Math.sin(ang) * reach];
+  // two-bone IK: elbow bends downward like a real arm
+  const bend = Math.acos(Math.min(1, (UA * UA + reach * reach - FA * FA) / (2 * UA * reach)));
+  const ea = ang + (dir > 0 ? bend : -bend) * (Math.sin(ang) < 0 ? 1 : -1) * dir;
+  const elbow: [number, number] = [shoulder[0] + Math.cos(ea) * UA, shoulder[1] + Math.sin(ea) * UA];
+  const len = pointing ? Math.max(30, Math.hypot(aim[0] - hand[0], aim[1] - hand[1]) - 22) : 70;
+  const tip: [number, number] = [hand[0] + Math.cos(ang) * len, hand[1] + Math.sin(ang) * len];
+  const spring = { type: 'spring' as const, stiffness: 110, damping: 17 };
 
   // comment bubble sits on the floor, on the side away from the stick
   const bubbleW = 200;
@@ -52,28 +62,19 @@ export default function Teacher({ target, talking, comment }: { target?: [number
       <line x1="0" x2="600" y1={FEET_Y + 4} y2={FEET_Y + 4} className="floor" />
       <ellipse cx={x} cy={FEET_Y + 4} rx="44" ry="5" className="shadow" style={{ transition: `cx ${walkDur}s` }} />
 
-      {/* the pointer stick, drawn in world coordinates */}
-      <motion.line
-        x1={hand[0]} y1={hand[1]}
-        animate={{ x2: pointing ? tip[0] : hand[0] + Math.cos(ang) * 60, y2: pointing ? tip[1] : hand[1] + Math.sin(ang) * 60, x1: hand[0], y1: hand[1] }}
-        transition={{ type: 'spring', stiffness: 120, damping: 18 }}
-        className="stick"
-      />
-      {pointing && (
-        <motion.circle cx={tip[0]} cy={tip[1]} r="4" className="stick-tip" initial={{ scale: 0 }} animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 1.2, repeat: Infinity }} />
-      )}
-      {pointing && <circle cx={aim[0]} cy={aim[1]} r="14" className="tip-ring" />}
+      {pointing && <circle cx={aimW[0]} cy={aimW[1]} r="14" className="tip-ring" />}
 
-      {/* body */}
       <motion.g initial={false} animate={{ x }} transition={{ duration: walkDur, ease: 'easeInOut' }}>
         <g transform={`translate(0 ${FEET_Y}) scale(${dir * S} ${S})`}>
           <Body walking={walking} talking={talking} />
         </g>
+        {/* stick (behind the hand), upper arm, forearm, joints, hand */}
+        <motion.line animate={{ x1: hand[0], y1: hand[1], x2: tip[0], y2: tip[1] }} transition={spring} className="stick" />
+        {pointing && <motion.circle animate={{ cx: tip[0], cy: tip[1], scale: [1, 1.5, 1] }} transition={{ ...spring, scale: { duration: 1.2, repeat: Infinity } }} r="4" className="stick-tip" />}
+        <motion.line animate={{ x1: shoulder[0], y1: shoulder[1], x2: elbow[0], y2: elbow[1] }} transition={spring} className="arm-sleeve" style={{ strokeWidth: 9.5 * S }} />
+        <motion.line animate={{ x1: elbow[0], y1: elbow[1], x2: hand[0], y2: hand[1] }} transition={spring} className="arm-sleeve fore" style={{ strokeWidth: 8.5 * S }} />
+        <motion.circle animate={{ cx: hand[0], cy: hand[1] }} transition={spring} r={5.2 * S} className="hand" />
       </motion.g>
-
-      {/* pointing arm (world coords, follows the stick) */}
-      <motion.line animate={{ x1: shoulder[0], y1: shoulder[1], x2: hand[0], y2: hand[1] }} transition={{ type: 'spring', stiffness: 120, damping: 18 }} className="arm-sleeve" style={{ strokeWidth: 9 * S }} />
-      <motion.circle animate={{ cx: hand[0], cy: hand[1] }} transition={{ type: 'spring', stiffness: 120, damping: 18 }} r={5.5 * S} className="hand" />
 
       {/* what he's saying about this spot */}
       {comment && (
@@ -126,9 +127,14 @@ function Body({ walking, talking }: { walking: boolean; talking: boolean }) {
         <path d={`M2 ${Y - 141} Q14 ${Y - 143} 16 ${Y - 132}`} className="hair-shine" />
         {/* eyebrow, eye (blinks), nose, smile */}
         <path d={`M5 ${Y - 128} q4 -2 8 0`} className="brow" />
-        <motion.ellipse cx="9" cy={Y - 123} rx="1.8" ry="2.2" className="eye" style={{ originY: `${Y - 123}px` }} animate={{ scaleY: [1, 1, 0.1, 1] }} transition={{ duration: 3.6, times: [0, 0.9, 0.94, 1], repeat: Infinity }} />
+        <motion.g style={{ originY: `${Y - 123}px` }} animate={{ scaleY: [1, 1, 0.1, 1] }} transition={{ duration: 3.6, times: [0, 0.9, 0.94, 1], repeat: Infinity }}>
+          <ellipse cx="0" cy={Y - 123} rx="1.7" ry="2.1" className="eye" />
+          <ellipse cx="9" cy={Y - 123} rx="1.8" ry="2.2" className="eye" />
+        </motion.g>
+        <path d={`M-6 ${Y - 128} q3 -2 6 0`} className="brow" />
+        <ellipse cx="-3" cy={Y - 116} rx="2.6" ry="1.4" className="blush" />
         <path d={`M13 ${Y - 121} q3 4 -1 5`} className="nose" />
-        <motion.ellipse cx="9" cy={Y - 112} rx="4" className="mouth" animate={talking ? { ry: [0.8, 2.6, 1, 3, 0.8] } : { ry: 0.8 }} transition={{ duration: 0.7, repeat: talking ? Infinity : 0 }} />
+        <motion.ellipse cx="6" cy={Y - 112} rx="4.2" className="mouth" animate={talking ? { ry: [0.8, 2.8, 1.2, 3.2, 0.8] } : { ry: 0.9 }} transition={{ duration: 0.7, repeat: talking ? Infinity : 0 }} />
       </motion.g>
     </motion.g>
   );

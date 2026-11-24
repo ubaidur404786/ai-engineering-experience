@@ -118,3 +118,17 @@
 .say-bubble::after { content: ""; position: absolute; top: 14px; width: 10px; height: 10px; background: var(--night-2); transform: rotate(45deg); }
 .say-bubble.tail-right::after { right: -4px; }
 .say-bubble.tail-left::after { left: -4px; }
+.arm-sleeve.fore { stroke: #1a2d4b; }
+.blush { fill: #e59a8a; opacity: .45; }
+.hello { font: 600 40px var(--serif); fill: var(--ink); }
+.mini-page { fill: #fffaf0; stroke: var(--paper-edge); stroke-width: 1.5; transition: stroke .3s; }
+.mini-page.hot { stroke: var(--teal); stroke-width: 3; }
+.txt-line { fill: #e2d8c3; }
+.ring { stroke-width: 2; } .ring0 { fill: #efe7d6; stroke: #cbbd9d; } .ring1 { fill: #e3eeef; stroke: var(--teal); }
+.ring2 { fill: #f5e7d0; stroke: var(--brass); } .ring3 { fill: var(--night-2); stroke: var(--brass-2); }
+.ring-t { font: 700 13px var(--sans); fill: var(--ink); }
+.ring3 + .ring-t { fill: var(--brass-2); }
+.bar-slm { fill: var(--teal); } .bar-llm { fill: var(--brass); }
+.zone { fill: none; stroke-dasharray: 6 5; stroke-width: 1.5; } .zone.slm { stroke: var(--teal); } .zone.llm { stroke: var(--brass); }
+.zone-t { font: italic 12px var(--serif); fill: var(--ink-2); }
+.life { fill: #fffaf0; stroke: var(--paper-edge); stroke-width: 1.5; } .life.hot { fill: #f0dcc0; stroke: var(--brass); stroke-width: 2.5; }

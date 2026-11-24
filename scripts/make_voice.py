@@ -26,7 +26,7 @@ def fnv1a(text: str) -> str:
 
 def spoken(text: str) -> str:
     # Pronunciation help for the TTS only; subtitles keep the original spelling.
-    return text.replace("Ubaid", "Oo-bayd").replace("U b, and a i d", "U B, and A I D")
+    return text.replace("Ubaid", "Oo-bayd").replace("bro", "bro").replace("U b, and a i d", "U B, and A I D")
 
 async def main():
     OUT.mkdir(parents=True, exist_ok=True)
@@ -35,9 +35,16 @@ async def main():
         lines.update(re.findall(r"say: '((?:[^'\\]|\\.)*)'", f.read_text(encoding="utf-8")))
     todo = [l for l in sorted(lines) if not (OUT / f"{fnv1a(l)}.mp3").exists()]
     print(f"{len(lines)} lines, {len(todo)} to record")
-    for l in todo:
-        await edge_tts.Communicate(spoken(l), VOICE, rate=RATE, pitch=PITCH).save(str(OUT / f"{fnv1a(l)}.mp3"))
-        print("  ok", fnv1a(l), l[:60])
+    sem = asyncio.Semaphore(8)  # record several lines at once
+    async def one(l):
+        async with sem:
+            await edge_tts.Communicate(spoken(l), VOICE, rate=RATE, pitch=PITCH).save(str(OUT / f"{fnv1a(l)}.mp3"))
+            print("  ok", fnv1a(l), l[:60], flush=True)
+    await asyncio.gather(*(one(l) for l in todo))
+    # remove clips whose line no longer exists in the book
+    keep = {f"{fnv1a(l)}.mp3" for l in lines}
+    for f in OUT.glob("*.mp3"):
+        if f.name not in keep: f.unlink(); print("  removed", f.name)
 
 if __name__ == "__main__":
     sys.exit(asyncio.run(main()))

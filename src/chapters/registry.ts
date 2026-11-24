@@ -1,6 +1,6 @@
 import type { Spread } from '../book/types';
 import { CURRICULUM } from '../data/curriculum';
-import { welcomeScene, twoSidesScene } from './introScenes';
+import { welcomeScene, part0 } from './introScenes';
 import { tokenizationScenes } from './tokenization/scenes';
 import { tokenization } from './tokenization';
 
@@ -10,7 +10,7 @@ const keep = (ids: string[]) => tokenization.filter((s) => ids.includes(s.id));
 /** Reading order of all written spreads. Add a chapter here once its spreads exist. */
 export const SPREADS: Spread[] = [
   welcomeScene,
-  twoSidesScene,
+  ...part0,
   ...tokenizationScenes,
   ...keep(['tok-python', 'tok-test', 'tok-explore']),
 ];
