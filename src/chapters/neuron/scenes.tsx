@@ -49,11 +49,11 @@ function NeuronDiagram({ step }: { step: number }) {
 const neuronScene = scene({
   id: 'nn-neuron', chapter: CH, stage: 'imagine', kicker: 'Part 1 · One neuron, then a network', title: 'A neuron is one tiny decision.',
   cues: [
-    { say: 'All this time I drew the model as a little brain box. Today we open it. Inside, there are thousands of tiny pieces called neurons. Let’s meet just one.', point: [310, 185], bubble: 'open the box 📦' },
-    { say: 'A neuron makes one small decision. Ours: should I go to the beach? It gets three clues as numbers. Sunny: yes, one. Warm: yes, one. Raining: no, zero.', point: [162, 180], bubble: 'clues = numbers' },
-    { say: 'The neuron adds up the clues into one number.', point: [310, 230], bubble: 'add them up ➕' },
-    { say: 'If the total is big enough: go! That’s the answer, one decision.', point: [495, 222], bubble: 'beach time 🏖️' },
-    { say: 'That’s it. A neuron takes some numbers in, and gives one answer out. ChatGPT is just billions of these, wired together. No magic.', point: [300, 330], bubble: 'no magic ✨' },
+    { say: 'All this time I drew the model as a brain box. Today, we open it. Inside are thousands of tiny pieces called neurons. Let’s meet one.', point: [310, 185], bubble: 'open the box 📦' },
+    { say: 'A neuron makes one small decision. Ours: should I go to the beach? It gets three clues, as numbers. Sunny? Yes, one. Warm? Yes, one. Raining? No, zero.', point: [162, 180], bubble: 'clues = numbers' },
+    { say: 'The neuron adds the clues up into one number.', point: [310, 230], bubble: 'add them up ➕' },
+    { say: 'If the total is big enough: go! One decision.', point: [495, 222], bubble: 'beach time 🏖️' },
+    { say: 'That’s it. Numbers in, one answer out. ChatGPT is billions of these wired together. No magic.', point: [300, 330], bubble: 'no magic ✨' },
   ],
   draw: (step) => <NeuronDiagram step={step} />,
   details: <p>The name comes from brain cells: a real neuron collects signals from its neighbours and “fires” when there are enough. An artificial neuron is a very rough copy of that idea, written in maths: just multiply, add, and decide.</p>,
@@ -94,12 +94,12 @@ function WeightsDiagram({ step }: { step: number }) {
 const weightsScene = scene({
   id: 'nn-weights', chapter: CH, stage: 'visualize', kicker: 'Weights and bias', title: 'Weights: how much each clue matters.',
   cues: [
-    { say: 'But wait. Not every clue matters the same. I love sun more than warmth, and I hate rain.', point: [300, 46], bubble: 'some clues matter more' },
-    { say: 'So each clue gets a weight: a number for how much it matters. Sunny gets three, warm gets two.', point: [300, 110], bubble: 'weights ⚖️' },
-    { say: 'Rain gets minus five. A negative weight means: this clue pushes me away. Rain kills the beach plan.', point: [300, 166], bubble: 'negative = no!' },
-    { say: 'Multiply each clue by its weight. Sunny: three. Warm: two. Raining is zero, so it adds nothing today. Lucky!', point: [490, 120], bubble: 'multiply ✖️' },
-    { say: 'And one more number: the bias. It’s my mood before I even look outside. I’m a bit lazy, so minus two.', point: [490, 238], bubble: 'bias = mood 😴' },
-    { say: 'Add it all up: three plus two plus zero minus two. Three! Bigger than zero, so: go. And here’s the secret: learning just means finding good weights and bias.', point: [300, 296], bubble: 'the whole trick' },
+    { say: 'But wait. Not every clue matters the same. I love the sun more than warmth, and I really hate rain.', point: [300, 46], bubble: 'some clues matter more' },
+    { say: 'So each clue gets a weight: how much it matters. Sunny gets three, warm gets two.', point: [300, 110], bubble: 'weights ⚖️' },
+    { say: 'Rain gets minus five. A negative weight pushes me away. Rain kills the plan.', point: [300, 166], bubble: 'negative = no!' },
+    { say: 'Multiply each clue by its weight. Sunny: three. Warm: two. Rain is zero today, so it adds nothing. Lucky!', point: [490, 120], bubble: 'multiply ✖️' },
+    { say: 'Plus one more number: the bias. That’s my mood before I even look outside. I’m a bit lazy, so minus two.', point: [490, 238], bubble: 'bias = mood 😴' },
+    { say: 'Add it all up: three plus two plus zero, minus two. Three! More than zero, so: go. And here’s the secret: learning just means finding good weights and a good bias.', point: [300, 296], bubble: 'the whole trick' },
   ],
   draw: (step) => <WeightsDiagram step={step} />,
   details: <p>The formula is <b>z = x₁·w₁ + x₂·w₂ + x₃·w₃ + b</b>, called the <b>weighted sum</b>. Weights and biases together are the model’s <b>parameters</b>. When people say “GPT-3 has 175 billion parameters”, they mean 175 billion of these little numbers.</p>,
@@ -137,11 +137,11 @@ function ActDiagram({ step }: { step: number }) {
 const actScene = scene({
   id: 'nn-activation', chapter: CH, stage: 'discover', kicker: 'Activation functions', title: 'Activation: the neuron’s yes-meter.',
   cues: [
-    { say: 'Our sum was three. But three what? The neuron needs a final step that turns the sum into a clear answer. That’s called an activation function.', point: [300, 44], bubble: 'squash it 🍋' },
-    { say: 'The simplest: a step. Above zero, yes. Below zero, no. Like a light switch.', point: [110, 200], bubble: 'on / off 💡' },
-    { say: 'Sigmoid is smoother. It squashes any number into a chance between zero and one. Our three becomes zero point nine five: ninety-five percent sure, go!', point: [300, 276], bubble: '95% sure' },
+    { say: 'Our sum was three. But three what? The neuron needs a last step that turns the sum into a clear answer. That’s an activation function.', point: [300, 44], bubble: 'squash it 🍋' },
+    { say: 'The simplest one is a step. Above zero, yes. Below zero, no. Like a light switch.', point: [110, 200], bubble: 'on / off 💡' },
+    { say: 'Sigmoid is smoother. It squashes any number into a chance between zero and one. Our three becomes zero point nine five. Ninety-five percent sure: go!', point: [300, 276], bubble: '95% sure' },
     { say: 'ReLU is the favourite in modern networks. Negative? Make it zero. Positive? Keep it. Simple and fast.', point: [490, 200], bubble: 'the popular one ⭐' },
-    { say: 'Why bother? Without activations, stacking neurons would just be one big sum, and it could only learn straight lines. Activations let networks learn curvy, interesting things.', point: [300, 350], bubble: 'the secret sauce' },
+    { say: 'Why bother? Without activations, stacking neurons is just one big sum, and it can only learn straight lines. Activations let networks learn curves. The interesting stuff.', point: [300, 350], bubble: 'the secret sauce' },
   ],
   draw: (step) => <ActDiagram step={step} />,
   details: <p>Sigmoid is <b>1 / (1 + e⁻ᶻ)</b>. ReLU is <b>max(0, z)</b>. LLMs like GPT use a smooth cousin of ReLU called <b>GELU</b>. Same idea: let positive signals through, quiet the negative ones.</p>,
@@ -181,11 +181,11 @@ function NetDiagram({ step }: { step: number }) {
 const netScene = scene({
   id: 'nn-network', chapter: CH, stage: 'behind', kicker: 'Forward propagation', title: 'Many neurons = a network.',
   cues: [
-    { say: 'One neuron is a tiny decision. Now let’s build a team.', point: [300, 200], bubble: 'teamwork 🤝' },
-    { say: 'Neurons stand in layers. Input on the left: our clues. A hidden layer in the middle. An output on the right. Every neuron talks to every neuron in the next layer.', point: [300, 365], bubble: 'layers' },
+    { say: 'One neuron is one tiny decision. Now let’s build a team.', point: [300, 200], bubble: 'teamwork 🤝' },
+    { say: 'Neurons stand in layers. Inputs on the left: our clues. A hidden layer in the middle. An output on the right. Each neuron talks to every neuron in the next layer.', point: [300, 365], bubble: 'layers' },
     { say: 'The clues go in on the left.', point: [90, 200], bubble: 'start here' },
-    { say: 'Each hidden neuron does its own little weighted sum and activation. One might notice “perfect beach weather”, another “too hot to move”.', point: [300, 160], bubble: 'each one: sum + squash' },
-    { say: 'Their answers flow into the output neuron, which makes the final call: go! Numbers moving left to right like this is called forward propagation. Fancy name, simple idea.', point: [510, 230], bubble: 'forward ➡️' },
+    { say: 'Each hidden neuron does its own weighted sum and activation. One might notice “perfect beach day,” another “way too hot.”', point: [300, 160], bubble: 'each one: sum + squash' },
+    { say: 'Their answers flow into the output, which makes the final call: go! Numbers moving left to right like this is called forward propagation. Fancy name, simple idea.', point: [510, 230], bubble: 'forward ➡️' },
   ],
   draw: (step) => <NetDiagram step={step} />,
   details: <p>A network with many hidden layers is a <b>deep</b> network, hence <b>deep learning</b>. GPT-style models stack dozens of layers, with thousands of neurons each. But every single neuron still does the same thing you just learned: multiply, add, squash, pass it on.</p>,
@@ -212,12 +212,12 @@ const CODE = [
 const codeScene = scene({
   id: 'nn-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'A neuron and a network, in thirteen lines.',
   cues: [
-    { say: 'Code time, I’m right here. Same beach question, now in Python with numpy, the number-crunching library.', point: lineAt(0), bubble: 'same example 🏖️', step: -1 },
-    { say: 'The clues, the weights and the bias. Exactly the numbers from my table.', point: lineAt(2), bubble: 'x, w, b', step: 0 },
-    { say: 'This little at sign means: multiply each pair and add them up. Plus the bias. That’s a whole neuron in one line!', point: lineAt(4), bubble: 'one neuron ✨', step: 1 },
+    { say: 'Code time, I’m right here. Same beach question, now in Python, with numpy, the number-crunching library.', point: lineAt(0), bubble: 'same example 🏖️', step: -1 },
+    { say: 'The clues, the weights and the bias. The exact numbers from my table.', point: lineAt(2), bubble: 'x, w, b', step: 0 },
+    { say: 'This little at sign means: multiply each pair and add them up. Plus the bias. A whole neuron, in one line!', point: lineAt(4), bubble: 'one neuron ✨', step: 1 },
     { say: 'The sigmoid formula, turning the sum into a chance.', point: lineAt(6), bubble: 'yes-meter', step: 2 },
-    { say: 'Now a tiny network. W1 holds weights for two hidden neurons at once. np dot maximum is ReLU. Then the hidden answers flow to the output.', point: lineAt(10), bubble: 'a network', step: 3 },
-    { say: 'Real output: sum three, so go. Ninety-five percent sure. And the network says five, a strong yes. Copy the code from my page and change the weather!', point: [300, 360], bubble: 'it really runs ✓', step: 4 },
+    { say: 'Now a tiny network. W1 holds the weights for two hidden neurons at once. np dot maximum is ReLU. Then the hidden answers flow to the output.', point: lineAt(10), bubble: 'a network', step: 3 },
+    { say: 'Real output: sum three, so go. Ninety-five percent sure. And the network says five, a strong yes. Copy the code and change the weather!', point: [300, 360], bubble: 'it really runs ✓', step: 4 },
   ],
   draw: (step) => {
     const hot = [[], [1, 2, 3], [4, 5], [6, 7], [8, 9, 10, 11, 12], []][step + 1];
@@ -230,16 +230,16 @@ const codeScene = scene({
 
 const quiz = quizScene({
   id: 'nn-test', chapter: CH, title: 'Quick check: neurons.',
-  outro: 'Great job! You just took apart a neural network. Turn the page for what’s next.',
+  outro: 'Great job! You just took a neural network apart.',
   items: [
     { ask: 'Quiz time! Four quick ones. First: what does a single neuron do?', q: 'What does a single neuron do?', options: ['Stores a whole sentence', 'Multiplies inputs by weights, adds them up, then squashes', 'Searches the internet'], answer: 1,
-      explain: 'Multiply, add, squash. That’s all one neuron ever does.' },
+      explain: 'Multiply, add, squash. That’s all a neuron ever does.' },
     { ask: 'Question two. In the beach example, rain had a weight of minus five. What does a negative weight mean?', q: 'Rain has weight −5. What does a negative weight mean?', options: ['That clue pushes the answer towards “no”', 'That clue is ignored', 'The neuron is broken'], answer: 0,
       explain: 'Negative weights push against the decision. Rain says: stay home.' },
     { ask: 'Question three. What is ReLU?', q: 'What does ReLU do?', options: ['Turns negatives into 0, keeps positives', 'Always outputs 1', 'Adds the bias'], answer: 0,
-      explain: 'ReLU is max of zero and z. Simple, fast, and the favourite in modern networks.' },
-    { ask: 'Last one. Numbers flowing from the input layer to the output layer is called what?', q: 'Numbers flowing input → hidden → output is called…', options: ['Backpropagation', 'Forward propagation', 'Clustering'], answer: 1,
-      explain: 'Forward propagation: left to right. Its partner, backpropagation, is how a network learns. Next chapter!' },
+      explain: 'ReLU keeps positives and turns negatives into zero. Simple, fast, and the modern favourite.' },
+    { ask: 'Last one. Numbers flowing from the input layer to the output layer. What’s that called?', q: 'Numbers flowing input → hidden → output is called…', options: ['Backpropagation', 'Forward propagation', 'Clustering'], answer: 1,
+      explain: 'Forward propagation: left to right. Its partner, backpropagation, is how a network learns. That’s next chapter!' },
   ],
 });
 
@@ -266,8 +266,8 @@ function NextDiagram({ step }: { step: number }) {
 const nextScene = scene({
   id: 'nn-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
-    { say: 'Look at you! You opened the brain box: neurons, weights, bias, activations, and a whole network.', point: [150, 150], bubble: 'Neurons ✓' },
-    { say: 'But one question is left. I picked the weights myself: three, two, minus five. How does a network find good weights on its own? That’s the next chapter. Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
+    { say: 'Look at you! You opened the brain box. Neurons, weights, bias, activations, and a whole network.', point: [150, 150], bubble: 'Neurons ✓' },
+    { say: 'But one question is left. I picked the weights myself: three, two, minus five. How does a network find good weights on its own? That’s next.', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

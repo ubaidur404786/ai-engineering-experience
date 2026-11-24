@@ -43,11 +43,11 @@ function WhyDiagram({ step }: { step: number }) {
 const whyScene = scene({
   id: 'lt-why', chapter: CH, stage: 'imagine', kicker: 'Part 1 · Ways a machine learns', title: 'Where do the answers come from?',
   cues: [
-    { say: 'Last chapter, every house came with its price: the answer. But in real life, who writes all those answers? That one question splits machine learning into three families.', point: [300, 262], bubble: 'who writes the answers?' },
-    { say: 'Way one: supervised. A teacher gives the model examples with the answers already written on them.', point: [110, 214], bubble: 'teacher 👩‍🏫' },
-    { say: 'Way two: unsupervised. No answers at all. The model just looks at the data and finds groups by itself.', point: [300, 214], bubble: 'explorer 🧭' },
-    { say: 'Way three: self-supervised. The data hides a piece of itself, and the model guesses it. The data is its own teacher. Sneaky, right?', point: [490, 214], bubble: 'self-quiz 🧩' },
-    { say: 'Three ways, same goal: learn patterns. And ChatGPT? Mostly way three. Let’s look at each one, one per page.', point: [300, 300], bubble: 'one per page →' },
+    { say: 'Last chapter, every house came with its price, the answer. But in real life, who writes all those answers? That one question splits machine learning into three families.', point: [300, 262], bubble: 'who writes the answers?' },
+    { say: 'One: supervised. A teacher hands over examples with the answers already on them.', point: [110, 214], bubble: 'teacher 👩‍🏫' },
+    { say: 'Two: unsupervised. No answers at all. The model looks at the data and finds groups by itself.', point: [300, 214], bubble: 'explorer 🧭' },
+    { say: 'Three: self-supervised. The data hides a piece of itself, and the model guesses it. The data is its own teacher. Sneaky.', point: [490, 214], bubble: 'self-quiz 🧩' },
+    { say: 'Three ways, one goal: learn patterns. And ChatGPT? Mostly number three. Let’s look at each one.', point: [300, 300], bubble: 'one per page →' },
   ],
   draw: (step) => <WhyDiagram step={step} />,
   details: <p>There is a fourth family, <b>reinforcement learning</b>: no answers, only rewards ("good move" / "bad move"), like training a dog with treats. It is how chatbots are polished to be helpful (RLHF), and gets its own chapter in Part 3.</p>,
@@ -93,10 +93,10 @@ const supScene = scene({
   id: 'lt-supervised', chapter: CH, stage: 'visualize', kicker: 'Way 1 · Supervised', title: 'Supervised: learning with an answer key.',
   cues: [
     { say: 'Supervised learning is like studying with flashcards. A picture on the front.', point: [110, 40], bubble: 'flashcards' },
-    { say: 'And the answer on the back: cat, dog, cat, dog. These answers are the labels from last chapter.', point: [184, 110], bubble: 'labels 🎯' },
-    { say: 'After enough cards, the model spots the patterns. Pointy ears, long nose. Show it a new photo, and it says: dog.', point: [495, 214], bubble: 'it learned!' },
-    { say: 'The catch: a human wrote every single label. For a million photos, that’s a lot of very bored humans.', point: [405, 334], bubble: 'expensive 💸' },
-    { say: 'Still, when you have the answers, supervised learning is the most reliable way. Spam filters, house prices, face unlock: all supervised.', point: [405, 362], bubble: 'everywhere' },
+    { say: 'And the answer on the back: cat, dog, cat, dog. Those answers are the labels.', point: [184, 110], bubble: 'labels 🎯' },
+    { say: 'After enough cards, the model spots the pattern. Pointy ears, long nose. Show it a new photo, and it says: dog.', point: [495, 214], bubble: 'it learned!' },
+    { say: 'The catch? A human wrote every single label. For a million photos, that’s a lot of very bored humans.', point: [405, 334], bubble: 'expensive 💸' },
+    { say: 'Still, when you have the answers, supervised is the most reliable way. Spam filters, house prices, face unlock. All supervised.', point: [405, 362], bubble: 'everywhere' },
   ],
   draw: (step) => <SupDiagram step={step} />,
   details: <p>Two kinds of supervised task: <b>classification</b> (pick a category: cat / dog, spam / not spam) and <b>regression</b> (predict a number: a price, a temperature).</p>,
@@ -138,10 +138,10 @@ function UnsupDiagram({ step }: { step: number }) {
 const unsupScene = scene({
   id: 'lt-unsupervised', chapter: CH, stage: 'discover', kicker: 'Way 2 · Unsupervised', title: 'Unsupervised: no answers, just patterns.',
   cues: [
-    { say: 'Here’s a shop’s customers. Each dot is one person: how often they visit, and how much they spend.', point: [300, 230], bubble: 'one dot = one customer' },
-    { say: 'Notice: no labels. Nobody told the model what kinds of customers exist. It gets the dots, and that’s it.', point: [420, 280], bubble: 'no answer key' },
-    { say: 'The model notices that some dots sit close together, and forms groups: A, B and C. This is called clustering.', point: [340, 250], bubble: 'clustering ✨' },
-    { say: 'The model can’t name the groups. A human looks and says: bargain hunters, weekend shoppers, big spenders. Now the shop can send each group the right offer.', point: [520, 160], bubble: 'humans name them' },
+    { say: 'Here are a shop’s customers. Each dot is a person: how often they visit, and how much they spend.', point: [300, 230], bubble: 'one dot = one customer' },
+    { say: 'Notice: no labels. Nobody told the model what kinds of customers exist. It just gets dots.', point: [420, 280], bubble: 'no answer key' },
+    { say: 'The model sees some dots sitting close together, and makes groups: A, B and C. That’s called clustering.', point: [340, 250], bubble: 'clustering ✨' },
+    { say: 'But it can’t name them. A human looks and says: bargain hunters, weekend shoppers, big spenders. Now the shop knows who gets which offer.', point: [520, 160], bubble: 'humans name them' },
   ],
   draw: (step) => <UnsupDiagram step={step} />,
   details: <p>Other unsupervised jobs: <b>anomaly detection</b> (a credit-card payment that fits no normal group might be fraud) and <b>dimensionality reduction</b> (squeezing 100 columns into 2 so you can plot them). The most famous clustering method is <b>K-means</b>; you'll see it in the code page.</p>,
@@ -188,11 +188,11 @@ function SelfDiagram({ step }: { step: number }) {
 const selfScene = scene({
   id: 'lt-self', chapter: CH, stage: 'behind', kicker: 'Way 3 · Self-supervised', title: 'Self-supervised: the data is its own teacher.',
   cues: [
-    { say: 'Now the clever one. Here’s an ordinary sentence. No teacher, no labels.', point: [300, 108], bubble: 'just text' },
-    { say: 'Hide the last word, and ask the model to guess it. The cat sat on the… what?', point: [519, 108], bubble: 'guess! 🤔' },
-    { say: 'Mat! And we didn’t need a human to tell us. The answer was sitting in the text all along. The data labelled itself.', point: [519, 108], bubble: 'free label 🎁' },
-    { say: 'Even better: one sentence gives many quizzes. The, then cat. The cat, then sat. Every word is the answer to the words before it.', point: [300, 220], bubble: 'many quizzes' },
-    { say: 'Now do that with the whole internet: trillions of free quizzes. Guess the next word, over and over. That’s exactly how GPT is pre-trained. You just learned the big secret.', point: [470, 284], bubble: 'the big secret 🤫' },
+    { say: 'Now the clever one. Here’s a normal sentence. No teacher, no labels.', point: [300, 108], bubble: 'just text' },
+    { say: 'Hide the last word, and ask the model to guess. The cat sat on the… what?', point: [519, 108], bubble: 'guess! 🤔' },
+    { say: 'Mat! And no human had to tell us. The answer was in the text all along. The data labelled itself.', point: [519, 108], bubble: 'free label 🎁' },
+    { say: 'Even better, one sentence gives you lots of quizzes. “The,” guess “cat.” “The cat,” guess “sat.” Every word is the answer to the words before it.', point: [300, 220], bubble: 'many quizzes' },
+    { say: 'Now do that with the whole internet. Trillions of free quizzes. Guess the next word, again and again. That’s exactly how GPT learns. You just learned the big secret.', point: [470, 284], bubble: 'the big secret 🤫' },
   ],
   draw: (step) => <SelfDiagram step={step} />,
   details: <p>Guessing the next word is called <b>next-token prediction</b> (tokens are coming in the Tokenization chapter). BERT uses a cousin: hide a word in the <i>middle</i> and guess it (masked language modelling). Images work too: hide part of a photo and predict the missing patch.</p>,
@@ -220,11 +220,11 @@ function CompareDiagram({ step }: { step: number }) {
 const compareScene = scene({
   id: 'lt-compare', chapter: CH, stage: 'visualize', kicker: 'Ways to learn · side by side', title: 'All three, side by side.',
   cues: [
-    { say: 'Let’s put them side by side. One column matters most: where do the answers come from?', point: [355, 56], bubble: 'the key column' },
-    { say: 'Supervised: humans write the answers. Reliable, but expensive.', point: [355, 86], bubble: 'humans ✍️' },
-    { say: 'Unsupervised: there are no answers. The model just finds structure.', point: [355, 116], bubble: 'no answers' },
+    { say: 'Side by side now. One column matters most: where do the answers come from?', point: [355, 56], bubble: 'the key column' },
+    { say: 'Supervised: humans write the answers. Reliable, but pricey.', point: [355, 86], bubble: 'humans ✍️' },
+    { say: 'Unsupervised: no answers at all. The model just finds structure.', point: [355, 116], bubble: 'no answers' },
     { say: 'Self-supervised: the data hides its own answers. Cheap, and it scales to the whole internet.', point: [355, 146], bubble: 'free answers' },
-    { say: 'Fun fact: ChatGPT uses them in a row. First it reads the internet, self-supervised. Then it studies human examples, supervised. Then it gets polished with rewards. Next page: all three in Python.', point: [445, 284], bubble: 'the recipe 🍳' },
+    { say: 'Fun fact: ChatGPT uses them one after another. First it reads the internet, self-supervised. Then it studies human examples, supervised. Then it gets polished with feedback. Next page: all three in Python.', point: [445, 284], bubble: 'the recipe 🍳' },
   ],
   draw: (step) => <CompareDiagram step={step} />,
 });
@@ -249,12 +249,12 @@ const CODE = [
 const codeScene = scene({
   id: 'lt-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'Three ways to learn, in twelve lines.',
   cues: [
-    { say: 'Code time, and I’m right here with you. Three tiny programs, one for each way of learning.', point: lineAt(0), bubble: 'three in one 🤝', step: -1 },
-    { say: 'Two ready-made tools from scikit-learn: one learns from answers, one finds groups.', point: lineAt(1), bubble: 'two tools', step: 0 },
-    { say: 'Supervised. X is hours studied, y is the answer: fail or pass. fit means: learn from these flashcards. Then we ask about someone who studied seven hours.', point: lineAt(4), bubble: 'with answers', step: 1 },
-    { say: 'Unsupervised. Just points, no y at all. K-means, asked for two groups, sorts them out by itself.', point: lineAt(7), bubble: 'no answers', step: 2 },
-    { say: 'Self-supervised. No library needed! We cut a sentence and use the next word as the answer. That’s the training data of an LLM, in two lines.', point: lineAt(10), bubble: 'free answers', step: 3 },
-    { say: 'Real output: seven hours means pass. The first two points are one group, the last two another. And the sentence turned into its own quiz. Copy the code from my page and try it!', point: [300, 350], bubble: 'it really runs ✓', step: 4 },
+    { say: 'Code time, and I’m right here. Three tiny programs, one for each way of learning.', point: lineAt(0), bubble: 'three in one 🤝', step: -1 },
+    { say: 'Two ready-made tools from scikit-learn. One learns from answers, one finds groups.', point: lineAt(1), bubble: 'two tools', step: 0 },
+    { say: 'Supervised. X is hours studied, y is the answer: fail or pass. fit means: study these flashcards. Then we ask about someone who studied seven hours.', point: lineAt(4), bubble: 'with answers', step: 1 },
+    { say: 'Unsupervised. Just points, no y at all. K-means, asked for two groups, sorts them out itself.', point: lineAt(7), bubble: 'no answers', step: 2 },
+    { say: 'Self-supervised. No library needed! We cut a sentence and use the next word as the answer. That’s an LLM’s training data, in two lines.', point: lineAt(10), bubble: 'free answers', step: 3 },
+    { say: 'Real output: seven hours means pass. The first two points are one group, the last two another. And the sentence became its own quiz. Copy it and try!', point: [300, 350], bubble: 'it really runs ✓', step: 4 },
   ],
   draw: (step) => {
     const hot = [[], [0, 1], [2, 3, 4, 5], [6, 7, 8], [9, 10, 11], []][step + 1];
@@ -267,15 +267,15 @@ const codeScene = scene({
 
 const quiz = quizScene({
   id: 'lt-test', chapter: CH, title: 'Quick check: ways to learn.',
-  outro: 'Done! You now know the three ways machines learn, and the secret behind GPT. Turn the page for what’s next.',
+  outro: 'Done! Three ways machines learn, plus the secret behind GPT.',
   items: [
-    { ask: 'Quiz time! Four quick ones, skip by turning the page if you like. First: you have ten thousand photos, each tagged cat or dog by a person. Which way of learning is that?', q: '10,000 photos, each tagged “cat” or “dog” by a person. Which way?', options: ['Supervised', 'Unsupervised', 'Self-supervised'], answer: 0,
-      explain: 'Humans wrote the answers on every photo, so it’s supervised. Flashcards with an answer key.' },
-    { ask: 'Question two. A shop wants to find groups of similar customers, but nobody knows what the groups are yet. Which way?', q: 'Find groups of similar customers, with no groups known in advance. Which way?', options: ['Supervised', 'Unsupervised', 'Self-supervised'], answer: 1,
-      explain: 'No answers exist, the model finds the groups itself. That’s unsupervised clustering.' },
-    { ask: 'Question three. How does GPT get the answers it learns from during pre-training?', q: 'During pre-training, where do GPT’s “answers” come from?', options: ['People label every sentence', 'The next word in the text itself', 'It doesn’t use any answers'], answer: 1,
-      explain: 'The next word is the answer, and it’s already in the text. Self-supervised: free labels, trillions of them.' },
-    { ask: 'Last one. What is the biggest downside of supervised learning?', q: 'The biggest downside of supervised learning?', options: ['It can’t make predictions', 'Someone has to label lots of data', 'It only works on text'], answer: 1,
+    { ask: 'Quiz time! Skip by turning the page if you like. First: ten thousand photos, each tagged cat or dog by a person. Which way of learning is that?', q: '10,000 photos, each tagged “cat” or “dog” by a person. Which way?', options: ['Supervised', 'Unsupervised', 'Self-supervised'], answer: 0,
+      explain: 'Humans wrote the answer on every photo, so it’s supervised. Flashcards with an answer key.' },
+    { ask: 'Question two. A shop wants groups of similar customers, but nobody knows the groups yet. Which way?', q: 'Find groups of similar customers, with no groups known in advance. Which way?', options: ['Supervised', 'Unsupervised', 'Self-supervised'], answer: 1,
+      explain: 'No answers exist, so the model finds groups itself. Unsupervised clustering.' },
+    { ask: 'Question three. Where does GPT get its answers during pre-training?', q: 'During pre-training, where do GPT’s “answers” come from?', options: ['People label every sentence', 'The next word in the text itself', 'It doesn’t use any answers'], answer: 1,
+      explain: 'The next word is the answer, and it’s already in the text. Self-supervised. Free labels, trillions of them.' },
+    { ask: 'Last one. What’s the biggest downside of supervised learning?', q: 'The biggest downside of supervised learning?', options: ['It can’t make predictions', 'Someone has to label lots of data', 'It only works on text'], answer: 1,
       explain: 'Labels cost human time and money. That’s exactly why self-supervised learning was such a big deal.' },
   ],
 });
@@ -303,8 +303,8 @@ function NextDiagram({ step }: { step: number }) {
 const nextScene = scene({
   id: 'lt-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
-    { say: 'Nice work! Three ways to learn, plus the secret of how GPT reads the internet.', point: [150, 150], bubble: 'Ways to learn ✓' },
-    { say: 'All this time I drew the model as a little brain box. Next chapter, we open the box and meet one neuron. Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
+    { say: 'Nice work! Three ways to learn, plus how GPT reads the internet.', point: [150, 150], bubble: 'Ways to learn ✓' },
+    { say: 'All this time I drew the model as a little brain box. Next chapter, we finally open it up and meet one neuron.', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

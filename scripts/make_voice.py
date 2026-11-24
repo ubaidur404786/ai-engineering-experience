@@ -11,8 +11,8 @@ and plays the file; if a file is missing it falls back to the browser's built-in
 import asyncio, pathlib, re, sys
 import edge_tts
 
-VOICE = "en-US-AndrewMultilingualNeural"   # warm, conversational (the Copilot voice)
-RATE, PITCH = "+8%", "+3Hz"                # a little faster and brighter: an energetic young teacher
+VOICE = "en-US-BrianMultilingualNeural"    # young, casual, natural
+RATE, PITCH = "+6%", "+0Hz"                # a touch quicker; natural pitch (shifting it sounds robotic)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "public" / "audio"
@@ -26,7 +26,7 @@ def fnv1a(text: str) -> str:
 
 def spoken(text: str) -> str:
     # Pronunciation help for the TTS only; subtitles keep the original spelling.
-    return text.replace("Ubaid", "Oo-bayd").replace("bro", "bro").replace("U b, and a i d", "U B, and A I D")
+    return text.replace("Ubaid", "Oo-bayd").replace("RAG", "rag").replace("ReLU", "ray-loo").replace("U b, and a i d", "U B, and A I D")
 
 async def main():
     OUT.mkdir(parents=True, exist_ok=True)

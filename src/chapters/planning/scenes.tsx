@@ -35,12 +35,12 @@ function PlanDiagram({ step }: { step: number }) {
 const planScene = scene({
   id: 'pl-decide', chapter: CH, stage: 'imagine', kicker: 'Part 2 · How LLMs are created', title: 'Plan first, train later.',
   cues: [
-    { say: 'Welcome to part two! Now we build a ChatGPT-style model. But like a house, you don’t start digging without a plan. Four decisions come first.', point: [300, 50], bubble: 'the blueprint 📐' },
-    { say: 'One: what is it for? A general chat helper? A coding model? A medical model? This is called choosing the domain.', point: [160, 125], bubble: 'the domain' },
-    { say: 'Two: how big? Size means the number of parameters, all those weights. Small models are cheap and fast, big ones are smarter but hungry.', point: [440, 125], bubble: 'size 📏' },
-    { say: 'Three: which data will it read? A coding model reads lots of code. A medical model reads medical text. You become what you read!', point: [160, 245], bubble: 'you are what you read' },
-    { say: 'Four: the budget. Thousands of GPUs running for weeks or months.', point: [440, 245], bubble: '💸💸💸' },
-    { say: 'Why so careful? One big training run can cost millions of dollars. A mistake found halfway is very expensive. So: plan first.', point: [300, 334], bubble: 'measure twice' },
+    { say: 'Welcome to Part two! Now we build a ChatGPT-style model. But like building a house, you don’t start digging without a plan. Four decisions first.', point: [300, 50], bubble: 'the blueprint 📐' },
+    { say: 'One: what’s it for? A chat helper? A coding model? A medical model? That’s called choosing the domain.', point: [160, 125], bubble: 'the domain' },
+    { say: 'Two: how big? Size means the number of parameters, all those weights. Small ones are cheap and fast. Big ones are smarter, but hungry.', point: [440, 125], bubble: 'size 📏' },
+    { say: 'Three: what will it read? A coding model reads lots of code. A medical model reads medical text. You are what you read!', point: [160, 245], bubble: 'you are what you read' },
+    { say: 'Four: the budget. Thousands of GPUs, running for weeks. Sometimes months.', point: [440, 245], bubble: '💸💸💸' },
+    { say: 'Why so careful? One big training run can cost millions. Finding a mistake halfway through really hurts. So: plan first.', point: [300, 334], bubble: 'measure twice' },
   ],
   draw: (step) => <PlanDiagram step={step} />,
   details: <p>Teams run small <b>scaling-law</b> experiments first: train tiny models, see how loss falls with more parameters and data, then predict how a big model will do before paying for it. A popular rule of thumb (Chinchilla): about <b>20 tokens of text per parameter</b>.</p>,
@@ -76,11 +76,11 @@ function PretrainDiagram({ step }: { step: number }) {
 const pretrainScene = scene({
   id: 'pl-pretrain', chapter: CH, stage: 'visualize', kicker: 'Pre-training overview', title: 'Pre-training: read everything, guess the next word.',
   cues: [
-    { say: 'Here is the whole of pre-training in one picture. It starts with a mountain of text.', point: [100, 135], bubble: 'a mountain of text' },
-    { say: 'The game is simple. Hide the next word, let the model guess, check, then learn from the mistake. Exactly the learning loop from part one.', point: [300, 216], bubble: 'guess the word 🙈' },
-    { say: 'Repeat that trillions of times, and you get a base model. It knows grammar, facts and style, but it can’t chat yet.', point: [500, 135], bubble: 'base model 🧱' },
-    { say: 'And remember self-supervised learning? Here it is! Nobody writes labels. The next word in the text is the answer.', point: [300, 312], bubble: 'no labels needed' },
-    { say: 'So where does all that text come from, and is it clean? That’s our next stop: the data.', point: [300, 360], bubble: 'next: data' },
+    { say: 'Here’s all of pre-training, in one picture. It starts with a mountain of text.', point: [100, 135], bubble: 'a mountain of text' },
+    { say: 'The game is simple. Hide the next word, let the model guess, check, and learn from the mistake. The same learning loop from Part one.', point: [300, 216], bubble: 'guess the word 🙈' },
+    { say: 'Do that trillions of times, and you get a base model. It knows grammar, facts and style. But it can’t chat yet.', point: [500, 135], bubble: 'base model 🧱' },
+    { say: 'Remember self-supervised learning? Here it is! Nobody writes labels. The next word is the answer.', point: [300, 312], bubble: 'no labels needed' },
+    { say: 'So where does all that text come from? And is it clean? That’s our next stop: the data.', point: [300, 360], bubble: 'next: data' },
   ],
   draw: (step) => <PretrainDiagram step={step} />,
   details: <p>After pre-training comes <b>post-training</b> (Part 3): teaching the base model to follow instructions and chat (SFT), then to prefer better answers (RLHF, DPO). Pre-training is by far the most expensive step.</p>,
@@ -90,14 +90,14 @@ const pretrainScene = scene({
 
 const quiz = quizScene({
   id: 'pl-test', chapter: CH, title: 'Quick check: planning.',
-  outro: 'Nice! The plan is ready. Turn the page and let’s collect some data.',
+  outro: 'Nice! The plan’s ready. Next, we go collect some data.',
   items: [
     { ask: 'Quick quiz! Why do teams plan so carefully before training?', q: 'Why plan carefully before training?', options: ['A big training run can cost millions', 'Planning makes the model smaller', 'There is no reason'], answer: 0,
       explain: 'Big runs cost millions and take months. Mistakes are expensive.' },
-    { ask: 'Question two. In pre-training, what is the model’s game?', q: 'In pre-training, the model learns by…', options: ['Chatting with users', 'Guessing the next word in huge amounts of text', 'Reading labels written by humans'], answer: 1,
+    { ask: 'Question two. In pre-training, what’s the model’s game?', q: 'In pre-training, the model learns by…', options: ['Chatting with users', 'Guessing the next word in huge amounts of text', 'Reading labels written by humans'], answer: 1,
       explain: 'Guess the next word, check, learn. Trillions of times.' },
     { ask: 'Last one. What comes out of pre-training?', q: 'What comes out of pre-training?', options: ['A finished chatbot', 'A base model that knows language but can’t chat yet', 'A database'], answer: 1,
-      explain: 'A base model. Teaching it to chat comes later, in part three.' },
+      explain: 'A base model. Teaching it to chat comes later, in Part three.' },
   ],
 });
 

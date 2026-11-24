@@ -68,11 +68,11 @@ function WhyDiagram({ step }: { step: number }) {
 const whyScene = scene({
   id: 'data-why', chapter: CH, stage: 'imagine', kicker: 'Part 1 · Data', title: 'Data: the raw material.',
   cues: [
-    { say: 'Welcome to Part 1! We start with the most boring-sounding word in AI: data. Trust me, it’s secretly the most important one.', point: [300, 290], bubble: 'Part 1 starts!' },
-    { say: 'A model is like a student who only ever reads one textbook. That textbook is the data: lots of examples.', point: [100, 150], bubble: 'the textbook 📚' },
-    { say: 'The model reads those examples and finds patterns. Nobody writes rules by hand. The patterns come from the data.', point: [300, 150], bubble: 'learns patterns' },
-    { say: 'Now imagine the textbook is full of typos, missing pages and wrong answers. The student studies hard, and learns all of it.', point: [100, 150], bubble: 'uh oh…' },
-    { say: 'So the model gives wrong answers, very confidently. Garbage in, garbage out. Better data beats a bigger model surprisingly often.', point: [478, 262], bubble: 'remember this one' },
+    { say: 'Welcome to Part 1! We start with the most boring-sounding word in AI: data. Secretly, it’s the most important one.', point: [300, 290], bubble: 'Part 1 starts!' },
+    { say: 'Think of a model as a student with just one textbook. That textbook is the data: tons of examples.', point: [100, 150], bubble: 'the textbook 📚' },
+    { say: 'The model reads those examples and spots the patterns. Nobody writes the rules. They come from the data.', point: [300, 150], bubble: 'learns patterns' },
+    { say: 'Now imagine that textbook is full of typos, missing pages and wrong answers. The student studies hard, and learns all of it.', point: [100, 150], bubble: 'uh oh…' },
+    { say: 'So the model gives wrong answers, super confidently. Garbage in, garbage out. Better data often beats a bigger model.', point: [478, 262], bubble: 'remember this one' },
   ],
   draw: (step) => <WhyDiagram step={step} />,
   details: <p>In practice, AI teams spend much of their time collecting, cleaning and labelling data, often more than on the model itself. Every chapter in this book, from tokenization to fine-tuning, starts with "what data goes in?".</p>,
@@ -115,10 +115,10 @@ function KindsDiagram({ step }: { step: number }) {
 const kindsScene = scene({
   id: 'data-kinds', chapter: CH, stage: 'discover', kicker: 'Data · two shapes', title: 'Structured vs unstructured.',
   cues: [
-    { say: 'Data comes in two shapes. Think of a neat spreadsheet versus your phone’s photo gallery.', point: [300, 50], bubble: 'two shapes' },
-    { say: 'Structured data lives in rows and columns. Every row has the same fields: name, age, city. Easy for computers, boring at parties.', point: [150, 160], bubble: 'tidy table' },
-    { say: 'Unstructured data has no fixed columns: text, images, audio, video. It’s messy, it’s human, and there’s a lot of it.', point: [450, 150], bubble: 'messy but rich' },
-    { say: 'And here’s the twist: large language models learn from unstructured text. Huge piles of it. That’s why this chapter matters for LLMs too.', point: [548, 362], bubble: 'LLM food 🍝' },
+    { say: 'Data comes in two shapes. Think: a neat spreadsheet, versus your phone’s photo gallery.', point: [300, 50], bubble: 'two shapes' },
+    { say: 'Structured data lives in rows and columns. Same fields every row: name, age, city. Computers love it.', point: [150, 160], bubble: 'tidy table' },
+    { say: 'Unstructured data has no columns at all: text, photos, audio, video. Messy, human, and there’s loads of it.', point: [450, 150], bubble: 'messy but rich' },
+    { say: 'And here’s the twist: language models learn from unstructured text. Mountains of it. So this chapter matters for LLMs too.', point: [548, 362], bubble: 'LLM food 🍝' },
   ],
   draw: (step) => <KindsDiagram step={step} />,
   details: <p>There is also <b>semi-structured</b> data such as JSON, HTML and logs: it has tags or keys, but no fixed table. Classic machine learning mostly works on structured tables; deep learning made unstructured data (text, images, sound) usable.</p>,
@@ -151,10 +151,10 @@ const featScene = scene({
   id: 'data-features', chapter: CH, stage: 'visualize', kicker: 'Data · features and labels', title: 'Features and labels.',
   cues: [
     { say: 'Let’s predict house prices. Each row is one example: one house.', point: [300, 120], bubble: 'one row = one house' },
-    { say: 'These columns are the features: size, rooms, garden. The facts we know about each house.', point: [235, 150], bubble: 'features 🔎' },
+    { say: 'These columns are the features: size, rooms, garden. What we know about each house.', point: [235, 150], bubble: 'features 🔎' },
     { say: 'This last column is the label: the right answer we want the model to learn. Here, the price.', point: [465, 150], bubble: 'label 🎯' },
     { say: 'Then a new house shows up. We know its features, but not its price.', point: [548, 307], bubble: 'price = ?' },
-    { say: 'The model uses the patterns it learned to guess the label. That’s it. That’s most of machine learning, in one table.', point: [548, 307], bubble: 'prediction ✨' },
+    { say: 'The model uses what it learned to guess the label. That’s it. That’s most of machine learning, in one table.', point: [548, 307], bubble: 'prediction ✨' },
   ],
   draw: (step) => <FeatDiagram step={step} />,
   details: <p>In code, features are usually called <code>X</code> (a table) and the label <code>y</code> (one column). Labels can be numbers (price: <b>regression</b>) or categories (spam / not spam: <b>classification</b>). For an LLM the "label" is simply the next token, which is why it can learn from raw text without humans labelling it (more in the next chapter).</p>,
@@ -188,12 +188,12 @@ function CleanDiagram({ step }: { step: number }) {
 const cleanScene = scene({
   id: 'data-cleaning', chapter: CH, stage: 'behind', kicker: 'Data · collection and cleaning', title: 'Cleaning: the unglamorous superpower.',
   cues: [
-    { say: 'First we collect data: forms, databases, APIs, web scraping. Here’s a table of houses, fresh from the internet.', point: [180, 150], bubble: 'collected!' },
-    { say: 'Real data is never clean. Never. If someone tells you their data is clean, they haven’t looked yet.', point: [180, 150], bubble: 'trust nobody 🕵️' },
-    { say: 'Problem one: duplicates. The same house appears twice, so the model thinks it’s twice as important. Delete the copy.', point: [300, 161], bubble: 'seen it already' },
-    { say: 'Problem two: a missing price. We either drop the row, or fill the gap carefully. Here we drop it.', point: [300, 191], bubble: 'empty cell' },
-    { say: 'Problem three: a house with minus three rooms. Either it’s a typo or a haunted house. Both get removed.', point: [300, 221], bubble: 'spooky 👻' },
-    { say: 'Fewer rows, but every row is true. A small clean dataset often beats a big dirty one.', point: [450, 335], bubble: 'quality > quantity' },
+    { say: 'First, we collect data: forms, databases, APIs, the web. Here’s a table of houses, fresh from the internet.', point: [180, 150], bubble: 'collected!' },
+    { say: 'Real data is never clean. Never. If someone says their data is clean, they just haven’t looked yet.', point: [180, 150], bubble: 'trust nobody 🕵️' },
+    { say: 'Problem one: duplicates. The same house shows up twice, so it counts double. Delete the copy.', point: [300, 161], bubble: 'seen it already' },
+    { say: 'Problem two: a missing price. We either drop the row, or fill the gap carefully. Here, we drop it.', point: [300, 191], bubble: 'empty cell' },
+    { say: 'Problem three: a house with minus three rooms. Either it’s a typo, or it’s haunted. Either way, it goes.', point: [300, 221], bubble: 'spooky 👻' },
+    { say: 'Fewer rows, but every row is true. A small clean dataset often beats a big messy one.', point: [450, 335], bubble: 'quality > quantity' },
   ],
   draw: (step) => <CleanDiagram step={step} />,
   details: <p>Other common cleaning steps: fixing types ("1,200" stored as text), unifying units (m² vs ft²), removing outliers, and removing personal data (names, emails) before training. For LLM pre-training, cleaning means deduplicating web pages and filtering low-quality or harmful text (Part 2).</p>,
@@ -239,12 +239,12 @@ function SplitDiagram({ step }: { step: number }) {
 const splitScene = scene({
   id: 'data-split', chapter: CH, stage: 'visualize', kicker: 'Data · train, validation, test', title: 'Train, validation, test.',
   cues: [
-    { say: 'Before training, we cut the clean data into three parts. This is the single most important habit in machine learning.', point: [300, 50], bubble: 'cut in three ✂️' },
-    { say: 'The biggest part is training data. The model studies these examples, like a textbook.', point: [205, 99], bubble: 'study time' },
-    { say: 'The validation set is the practice exam. We use it to tune settings and pick the best version of the model.', point: [407, 99], bubble: 'practice exam' },
-    { say: 'The test set is the final exam. It stays locked away, and we use it only once, at the very end, to get an honest score.', point: [502, 99], bubble: 'locked 🔒' },
-    { say: 'If test examples leak into training, the model has seen the exam answers. You get a fake 99 percent, then it fails on real users. That’s called data leakage.', point: [170, 270], bubble: 'no cheating!' },
-    { say: 'That’s the theory. Next page: we do all of this in ten lines of real Python, and I’ll walk you through every line. Then a quick test, take it or skip it.', point: [540, 352], bubble: 'next page →' },
+    { say: 'Before training, we cut the clean data into three parts. This is the most important habit in machine learning.', point: [300, 50], bubble: 'cut in three ✂️' },
+    { say: 'The biggest part is the training data. The model studies these, like homework.', point: [205, 99], bubble: 'study time' },
+    { say: 'The validation set is the practice exam. We use it to tune things and pick the best version.', point: [407, 99], bubble: 'practice exam' },
+    { say: 'The test set is the final exam. It stays locked away, and we use it once, at the very end, for an honest score.', point: [502, 99], bubble: 'locked 🔒' },
+    { say: 'If test examples sneak into training, the model has seen the answers. You get a fake ninety-nine percent, then it flops on real users. That’s data leakage.', point: [170, 270], bubble: 'no cheating!' },
+    { say: 'That’s the theory. Next page, we do all of it in ten lines of real Python, together.', point: [540, 352], bubble: 'next page →' },
   ],
   draw: (step) => <SplitDiagram step={step} />,
   details: <p>70 / 15 / 15 and 80 / 10 / 10 are common splits; with very large datasets the validation and test sets can be a much smaller percentage. Split <i>before</i> cleaning steps that learn from the data (such as filling gaps with the average), or the average leaks test information into training.</p>,
@@ -284,13 +284,13 @@ const CSV = `size_m2,rooms,price_k
 const codeScene = scene({
   id: 'data-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'The whole chapter, in code.',
   cues: [
-    { say: 'Code time! Don’t panic, I’m right here. We’ll go line by line.', point: lineAt(0), bubble: 'I got you 🤝', step: -1 },
-    { say: 'pandas is the spreadsheet of Python. scikit-learn gives us a ready-made splitter.', point: lineAt(1), bubble: 'two tools', step: 0 },
-    { say: 'read csv loads our house table into a DataFrame. Twelve rows, including the messy ones.', point: lineAt(2), bubble: 'load the table', step: 1 },
-    { say: 'Three cleaning lines: drop duplicates, drop missing values, and throw out the haunted minus three rooms house.', point: lineAt(5), bubble: 'clean, clean, clean', step: 2 },
-    { say: 'X holds the features, y holds the label. Capital X because it’s a table, small y because it’s one column. Programmers love traditions.', point: lineAt(8), bubble: 'features & label', step: 3 },
-    { say: 'train test split cuts the data: twenty percent goes to the locked test set. random state makes the split the same every run.', point: lineAt(10), bubble: 'the big cut ✂️', step: 4 },
-    { say: 'And the real output: twelve rows became nine after cleaning, then seven for training and two for testing. Copy the code from my page and try it yourself!', point: [300, 365], bubble: 'it really runs ✓', step: 5 },
+    { say: 'Code time! Don’t panic, I’m right here. Line by line.', point: lineAt(0), bubble: 'I got you 🤝', step: -1 },
+    { say: 'pandas is basically a spreadsheet inside Python. scikit-learn gives us a ready-made splitter.', point: lineAt(1), bubble: 'two tools', step: 0 },
+    { say: 'read csv loads our house table. Twelve rows, messy ones included.', point: lineAt(2), bubble: 'load the table', step: 1 },
+    { say: 'Three cleaning lines: drop the duplicates, drop the missing values, and kick out the haunted house.', point: lineAt(5), bubble: 'clean, clean, clean', step: 2 },
+    { say: 'X holds the features, y holds the label. Big X because it’s a table, small y because it’s one column. Programmers love their traditions.', point: lineAt(8), bubble: 'features & label', step: 3 },
+    { say: 'train test split cuts the data. Twenty percent goes to the locked test set. random state keeps the split the same every run.', point: lineAt(10), bubble: 'the big cut ✂️', step: 4 },
+    { say: 'And the real output: twelve rows, nine after cleaning, then seven for training and two for testing. Copy the code and try it yourself!', point: [300, 365], bubble: 'it really runs ✓', step: 5 },
   ],
   draw: (step) => {
     const hot = [[], [0, 1], [2, 3], [4, 5, 6, 7], [8, 9], [10, 11, 12], []][step + 1];
@@ -303,16 +303,16 @@ const codeScene = scene({
 
 const quiz = quizScene({
   id: 'data-test', chapter: CH, title: 'Quick check: data.',
-  outro: 'That’s the data chapter done! Whatever your score, you now think about data like an engineer. Turn the page for what’s next.',
+  outro: 'Data chapter, done! Whatever your score, you now think about data like an engineer.',
   items: [
-    { ask: 'Quiz time! Four questions, no pressure, you can skip by turning the page. First one: which of these is unstructured data?', q: 'Which of these is unstructured data?', options: ['A table of customer ages', 'A folder of customer support emails', 'A database of product prices'], answer: 1,
-      explain: 'Emails are free text with no fixed columns, so they’re unstructured. Tables and databases are structured.' },
-    { ask: 'Question two. In a spam filter, what is the label?', q: 'You build a spam filter. What is the label?', options: ['The email’s word count', 'Whether the email is spam or not', 'The sender’s address'], answer: 1,
-      explain: 'The label is the answer we want predicted: spam or not spam. Word count and sender are features.' },
-    { ask: 'Question three. Your model scores 99 percent on the test set, but fails on real users. What probably happened?', q: '99% on the test set, terrible on real users. Most likely cause?', options: ['The model is too small', 'Test data leaked into training', 'The validation set was too big'], answer: 1,
-      explain: 'A score that’s too good to be true usually means data leakage: the model already saw the test examples while training.' },
-    { ask: 'Last one. You find the same row ten times in your data. Why is that a problem?', q: 'The same row appears 10 times. Why does it matter?', options: ['It doesn’t, more data is always better', 'The model over-weights that example, and it may leak across splits', 'It only slows down training'], answer: 1,
-      explain: 'Duplicates make one example count ten times, and copies can land in both train and test, which is leakage again. Deduplicate first.' },
+    { ask: 'Quiz time! Four questions, no pressure, turn the page to skip. First: which of these is unstructured data?', q: 'Which of these is unstructured data?', options: ['A table of customer ages', 'A folder of customer support emails', 'A database of product prices'], answer: 1,
+      explain: 'Emails are free text, no fixed columns, so they’re unstructured. Tables and databases are structured.' },
+    { ask: 'Question two. In a spam filter, what’s the label?', q: 'You build a spam filter. What is the label?', options: ['The email’s word count', 'Whether the email is spam or not', 'The sender’s address'], answer: 1,
+      explain: 'The label is what we want predicted: spam or not spam. Word count and sender are features.' },
+    { ask: 'Question three. Your model scores ninety-nine percent on the test set, but fails on real users. What probably happened?', q: '99% on the test set, terrible on real users. Most likely cause?', options: ['The model is too small', 'Test data leaked into training', 'The validation set was too big'], answer: 1,
+      explain: 'Too good to be true usually means data leakage. The model already saw the test examples during training.' },
+    { ask: 'Last one. The same row appears ten times in your data. Why’s that a problem?', q: 'The same row appears 10 times. Why does it matter?', options: ['It doesn’t, more data is always better', 'The model over-weights that example, and it may leak across splits', 'It only slows down training'], answer: 1,
+      explain: 'Duplicates make one example count ten times. And copies can land in both train and test. Leakage again. Deduplicate first.' },
   ],
 });
 
@@ -339,8 +339,8 @@ function NextDiagram({ step }: { step: number }) {
 const nextScene = scene({
   id: 'data-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
-    { say: 'Look at you. Six data ideas, and one real Python script. Most people skip this part, you didn’t.', point: [150, 150], bubble: 'Data ✓' },
-    { say: 'Next in Part 1: the ways a machine learns. Where do the answers come from, and how can a model learn with no labels at all? Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
+    { say: 'Look at you. Six data ideas and a real Python script. Most people skip this part. You didn’t.', point: [150, 150], bubble: 'Data ✓' },
+    { say: 'Next: how machines actually learn. Who writes the answers? And can a model learn with no answers at all? Let’s find out.', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

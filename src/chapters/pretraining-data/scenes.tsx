@@ -43,9 +43,9 @@ function CollectDiagram({ step }: { step: number }) {
 const collectScene = scene({
   id: 'pd-collect', chapter: CH, stage: 'imagine', kicker: 'Part 2 · Pre-training data', title: 'Collect a giant library.',
   cues: [
-    { say: 'Our model learns from what it reads. So first we build a giant library.', point: [300, 46], bubble: 'the library 📚' },
-    { say: 'Web pages are the biggest part, collected by crawlers that visit billions of pages. Then books, code, Wikipedia and research papers.', point: [160, 110], bubble: 'crawl the web 🕷️' },
-    { say: 'How much? Modern models read about fifteen trillion tokens. A person reading all day long would need around a hundred thousand years.', point: [300, 296], bubble: 'that’s a LOT' },
+    { say: 'A model is what it reads. So first, we build it a giant library.', point: [300, 46], bubble: 'the library 📚' },
+    { say: 'Web pages are the biggest part, collected by crawlers that visit billions of sites. Then books, code, Wikipedia and research papers.', point: [160, 110], bubble: 'crawl the web 🕷️' },
+    { say: 'How much? Modern models read around fifteen trillion tokens. A person reading all day would need about a hundred thousand years. Bring snacks.', point: [300, 296], bubble: 'that’s a LOT' },
     { say: 'But there’s a catch. Raw web text is mostly junk: ads, menus, spam, copies. Garbage in, garbage out. So we clean.', point: [300, 374], bubble: 'garbage in, garbage out' },
   ],
   draw: (step) => <CollectDiagram step={step} />,
@@ -85,10 +85,10 @@ const cleanScene = scene({
   cues: [
     { say: 'The raw text goes down a cleaning line, like a factory. Four stations.', point: [300, 46], bubble: 'factory time 🏭' },
     { say: 'Station one: strip the web code. Menus, buttons, ads, login boxes. Keep only the real text.', point: [460, 96], bubble: 'just the words' },
-    { say: 'Station two: remove copies. The same page can appear a thousand times. If the model reads it a thousand times, it memorises it. Remember overfitting? Keep one.', point: [460, 172], bubble: 'deduplication 👯' },
-    { say: 'Station three: a quality filter. Spam, gibberish and very low quality pages get thrown out. Often a small model does the judging!', point: [460, 248], bubble: 'quality check ⭐' },
-    { say: 'Station four, very important: privacy. Emails, phone numbers, addresses, personal stuff. We find it and hide it. That’s called P I I removal: personally identifiable information.', point: [460, 324], bubble: 'privacy 🔒' },
-    { say: 'At the end, often more than half the text is gone. And that’s good: less, but better data makes a smarter model.', point: [300, 394], bubble: 'quality > quantity' },
+    { say: 'Station two: remove copies. The same page can show up a thousand times, and the model would memorise it. Remember overfitting? Keep one.', point: [460, 172], bubble: 'deduplication 👯' },
+    { say: 'Station three: a quality filter. Spam, gibberish and junk pages get thrown out. Often a small model does the judging!', point: [460, 248], bubble: 'quality check ⭐' },
+    { say: 'Station four, the important one: privacy. Emails, phone numbers, home addresses. We find them and hide them. That’s PII removal: personally identifiable information.', point: [460, 324], bubble: 'privacy 🔒' },
+    { say: 'At the end, often more than half the text is gone. And that’s good. Less, but better data makes a smarter model.', point: [300, 394], bubble: 'quality > quantity' },
   ],
   draw: (step) => <CleanDiagram step={step} />,
   details: <p>Teams also filter <b>toxic or harmful</b> content, check <b>languages</b>, and remove copies of <b>benchmark test questions</b> so the model can’t cheat on its exams later. Exact copies are found with hashes; near-copies with a trick called <b>MinHash</b>.</p>,
@@ -116,9 +116,9 @@ const CODE = [
 const codeScene = scene({
   id: 'pd-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'A tiny cleaning line, in fourteen lines.',
   cues: [
-    { say: 'Code time! Our tiny web: four documents. One is spam, two are copies, one has private info.', point: lineAt(2), bubble: 'a tiny internet', step: -1 },
-    { say: 'Station: copies. If we already kept it, skip. Station: junk. Too many exclamation marks? Skip.', point: lineAt(8), bubble: 'dedup + filter', step: 0 },
-    { say: 'These are regular expressions: little search patterns. One finds emails, one finds phone numbers, and both get hidden.', point: lineAt(10), bubble: 'privacy 🔒', step: 1 },
+    { say: 'Code time! Our tiny internet: four documents. One is spam, two are copies, and one has private info.', point: lineAt(2), bubble: 'a tiny internet', step: -1 },
+    { say: 'First, copies: if we already kept it, skip. Then junk: too many exclamation marks? Skip.', point: lineAt(8), bubble: 'dedup + filter', step: 0 },
+    { say: 'These are regular expressions, little search patterns. One finds emails, one finds phone numbers, and both get hidden.', point: lineAt(10), bubble: 'privacy 🔒', step: 1 },
     { say: 'Real output: four in, two out. The spam and the copy are gone, and Bob’s email and phone are safe. Real pipelines do this for trillions of tokens!', point: [300, 370], bubble: 'it works ✓', step: 2 },
   ],
   draw: (step) => {
@@ -132,14 +132,14 @@ const codeScene = scene({
 
 const quiz = quizScene({
   id: 'pd-test', chapter: CH, title: 'Quick check: pre-training data.',
-  outro: 'Perfect! Our library is clean. Now the model has to read it. Turn the page!',
+  outro: 'Perfect! Our library is clean. Now the model has to read it.',
   items: [
     { ask: 'Quiz time! Where does most pre-training text come from?', q: 'Most pre-training text comes from…', options: ['The web', 'Phone calls', 'Handwritten letters'], answer: 0,
       explain: 'Web pages, collected by crawlers. Plus books, code and papers.' },
     { ask: 'Question two. Why remove duplicate pages?', q: 'Why remove duplicate pages?', options: ['To make the files prettier', 'So the model doesn’t memorise repeated text', 'Duplicates are illegal'], answer: 1,
-      explain: 'Reading the same text a thousand times leads to memorising. Remember overfitting!' },
-    { ask: 'Last one. What does P I I removal protect?', q: 'PII removal protects…', options: ['The GPUs', 'People’s private info like emails and phone numbers', 'The model’s weights'], answer: 1,
-      explain: 'Personally identifiable information. The model should never learn your phone number.' },
+      explain: 'Reading the same text a thousand times leads to memorising. Hello, overfitting.' },
+    { ask: 'Last one. What does PII removal protect?', q: 'PII removal protects…', options: ['The GPUs', 'People’s private info like emails and phone numbers', 'The model’s weights'], answer: 1,
+      explain: 'Personally identifiable information. A model should never learn your phone number.' },
   ],
 });
 
@@ -167,8 +167,8 @@ function NextDiagram({ step }: { step: number }) {
 const nextScene = scene({
   id: 'pd-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
-    { say: 'We have a plan and a clean library of text. Great work!', point: [150, 140], bubble: 'data ✓' },
-    { say: 'But wait. A neural network only understands numbers, remember? So how does text become numbers? That’s tokenization, and it’s the next page. Turn the page, bro!', point: [465, 270], bubble: 'next page →' },
+    { say: 'We’ve got a plan and a clean library. Great work!', point: [150, 140], bubble: 'data ✓' },
+    { say: 'But wait. A neural network only understands numbers, remember? So how does text become numbers? That’s tokenization, and it’s up next.', point: [465, 270], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

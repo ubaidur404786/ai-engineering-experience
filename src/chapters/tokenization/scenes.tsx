@@ -76,12 +76,12 @@ function JourneyDiagram({ step }: { step: number }) {
 const journey = scene({
   id: 'tok-imagine', chapter: CH, stage: 'imagine', kicker: 'Part 2 · Tokenization', title: 'What happens after you press Enter?',
   cues: [
-    { say: 'Imagine you type: How do we make tea? And you press Enter. Let’s follow your message on its journey.', point: [145, 72], bubble: 'your message' },
-    { say: 'Can the model read your sentence directly? No. Inside, a model is a giant math formula. It multiplies numbers. It has no idea what a letter is.', point: [495, 96], bubble: '🤔 letters? I only know numbers…' },
-    { say: 'So first, your text visits a translator called the tokenizer.', point: [145, 212], bubble: 'the translator' },
-    { say: 'The tokenizer cuts your text into pieces called tokens. Look: six tokens, not five words. And the space sticks to the front of the word.', point: [100, 305], bubble: '“·do” includes the space!' },
-    { say: 'Each token is replaced by its number in a fixed list called the vocabulary. These numbers are token IDs.', point: [300, 342], bubble: '8887 means “·tea” in GPT-2' },
-    { say: 'Only this list of numbers enters the model. That is tokenization: turning text into numbers the model can compute with.', point: [495, 140], bubble: '✓ numbers! now I can work' },
+    { say: 'Imagine you type: How do we make tea? And you hit Enter. Let’s follow your message on its trip.', point: [145, 72], bubble: 'your message' },
+    { say: 'Can the model read your sentence? Nope. Inside, a model is a giant math formula. It multiplies numbers. It has no clue what a letter is.', point: [495, 96], bubble: '🤔 letters? I only know numbers…' },
+    { say: 'So first, your text visits a translator: the tokenizer.', point: [145, 212], bubble: 'the translator' },
+    { say: 'The tokenizer cuts your text into pieces called tokens. Look: six tokens, not five words. And each space sticks to the front of the next word.', point: [100, 305], bubble: '“·do” includes the space!' },
+    { say: 'Each token is swapped for its number in a fixed list, the vocabulary. Those numbers are token IDs.', point: [300, 342], bubble: '8887 means “·tea” in GPT-2' },
+    { say: 'Only these numbers go into the model. That’s tokenization: turning text into numbers the model can do math with.', point: [495, 140], bubble: '✓ numbers! now I can work' },
   ],
   draw: (s) => <JourneyDiagram step={s} />,
   details: <p>Everything on this page is real GPT-2 output, computed in your browser: <code>[2437, 466, 356, 787, 8887, 30]</code>. A different model uses a different vocabulary, so it gets different IDs.</p>,
@@ -124,11 +124,11 @@ function PipelineDiagram({ step }: { step: number }) {
 const pipeline = scene({
   id: 'tok-pipeline', chapter: CH, stage: 'visualize', kicker: 'Visualize', title: 'Inside the tokenizer',
   cues: [
-    { say: 'Let’s open the tokenizer and watch what happens inside, one step at a time.', point: [220, 50], bubble: 'start: plain text' },
+    { say: 'Let’s open up the tokenizer and watch it work, one step at a time.', point: [220, 50], bubble: 'start: plain text' },
     { say: 'First, every character becomes bytes: numbers from zero to two hundred fifty-five. Any language, even emoji, can be written as bytes. So nothing is ever unknown.', point: [102, 121], bubble: '“H” is byte 72' },
-    { say: 'Next, a pattern cuts the text into rough pieces: words with their leading space, and punctuation.', point: [180, 191], bubble: 'cut at spaces & punctuation' },
-    { say: 'Inside each piece, the BPE algorithm merges bytes that it learned belong together. Common words like tea become a single token.', point: [300, 261], bubble: '“·tea” is common → 1 token' },
-    { say: 'Finally, a vocabulary lookup turns every token into its ID. This list of integers is what the model receives.', point: [300, 345], bubble: 'ID = row number in the vocabulary' },
+    { say: 'Next, a pattern chops the text into rough pieces: words with their space in front, and punctuation.', point: [180, 191], bubble: 'cut at spaces & punctuation' },
+    { say: 'Inside each piece, BPE glues together bytes it learned belong together. Common words, like tea, become one token.', point: [300, 261], bubble: '“·tea” is common → 1 token' },
+    { say: 'Finally, a lookup turns every token into its ID. That list of numbers is what the model gets.', point: [300, 345], bubble: 'ID = row number in the vocabulary' },
   ],
   draw: (s) => <PipelineDiagram step={s} />,
   below: (
@@ -186,11 +186,11 @@ function RareDiagram({ step }: { step: number }) {
 const rare = scene({
   id: 'tok-interact', chapter: CH, stage: 'interact', kicker: 'Discover', title: 'Why does my name break into pieces?',
   cues: [
-    { say: 'Here is a puzzle. Why does a common word stay whole, but a name gets broken into pieces?', point: [300, 58], bubble: 'the vocabulary' },
-    { say: 'The word tea appears so often in training text that it earned its own place in the vocabulary. One token.', point: [140, 240], bubble: 'found on the shelf ✓' },
-    { say: 'The name Ubaid is much rarer. There is no single entry for it on the shelf.', point: [430, 195], bubble: 'hmm… not found' },
-    { say: 'So the tokenizer builds it from pieces it does have: U b, and a i d. A tokenizer never fails. It just uses smaller pieces.', point: [430, 240], bubble: 'built from known pieces' },
-    { say: 'This matters. Rare words, other languages and code often need more tokens. And you pay per token, and context limits count tokens.', point: [300, 365], bubble: 'tokens = money + memory' },
+    { say: 'Here’s a puzzle. Why does a common word stay whole, but a name gets chopped up?', point: [300, 58], bubble: 'the vocabulary' },
+    { say: 'The word tea shows up so often in training text that it earned its own spot in the vocabulary. One token.', point: [140, 240], bubble: 'found on the shelf ✓' },
+    { say: 'The name Ubaid is much rarer. There’s no single spot for it on the shelf.', point: [430, 195], bubble: 'hmm… not found' },
+    { say: 'So the tokenizer builds it from pieces it does have: U b, and a i d. A tokenizer never gives up. It just uses smaller pieces.', point: [430, 240], bubble: 'built from known pieces' },
+    { say: 'Why care? Rare words, other languages and code often need more tokens. And you pay per token, and context limits count tokens too.', point: [300, 365], bubble: 'tokens = money + memory' },
   ],
   draw: (s) => <RareDiagram step={s} />,
   below: (
@@ -246,11 +246,11 @@ function BpeDiagram({ step }: { step: number }) {
 const bpe = scene({
   id: 'tok-bpe', chapter: CH, stage: 'behind', kicker: 'Behind the scenes', title: 'How does the tokenizer learn its pieces?',
   cues: [
-    { say: 'Where does the vocabulary come from? It is learned from text, by an algorithm called Byte Pair Encoding. We start with single letters.', point: [80, 66], bubble: 'start: single letters' },
-    { say: 'Count every pair of neighbours. L and O appear together most often, so they are merged into one new piece: L O.', point: [60, 66], bubble: '“l”+“o” → “lo”', step: 1 },
-    { say: 'Count again, merge again. L O plus W becomes low. Now the whole word low is a single piece.', point: [70, 66], bubble: '“lo”+“w” → “low”', step: 2 },
-    { say: 'Next, E and S, then E S and T. The ending “est” appears in lowest and newest, so it becomes a piece too.', point: [130, 170], bubble: 'shared endings get merged', step: 4 },
-    { say: 'Every merge adds one piece to the vocabulary. GPT-2 repeated this about fifty thousand times on a huge amount of text. That is why common words end up as single tokens.', point: [480, 150], bubble: 'GPT-2: 50,257 pieces', step: 5 },
+    { say: 'So where does the vocabulary come from? It’s learned from text, by Byte Pair Encoding. We start with single letters.', point: [80, 66], bubble: 'start: single letters' },
+    { say: 'Count every pair of neighbours. L and O show up together the most, so they merge into one new piece: L O.', point: [60, 66], bubble: '“l”+“o” → “lo”', step: 1 },
+    { say: 'Count again, merge again. L O plus W becomes low. Now the whole word low is one piece.', point: [70, 66], bubble: '“lo”+“w” → “low”', step: 2 },
+    { say: 'Next, E and S, then E S and T. The ending “est” shows up in lowest and newest, so it becomes a piece too.', point: [130, 170], bubble: 'shared endings get merged', step: 4 },
+    { say: 'Every merge adds one piece to the vocabulary. GPT-2 did this about fifty thousand times. That’s why common words end up as single tokens.', point: [480, 150], bubble: 'GPT-2: 50,257 pieces', step: 5 },
   ],
   draw: (s) => <BpeDiagram step={s} />,
   below: (
@@ -308,11 +308,11 @@ function EmbedDiagram({ step }: { step: number }) {
 const embed = scene({
   id: 'tok-misconceptions', chapter: CH, stage: 'behind', kicker: 'Common trap', title: 'A token ID is not the meaning',
   cues: [
-    { say: 'One last trap that confuses many people. Is the token ID the meaning of the word?', point: [212, 80], bubble: '8887… is that “tea”-ness?' },
-    { say: 'No. The ID is just an address, like a shelf number in a library. 8887 is not more tea-like than 30. The numbers themselves mean nothing.', point: [212, 80], bubble: 'just an address' },
-    { say: 'The model uses that address to open one row of a big table called the embedding matrix.', point: [430, 150], bubble: 'open row 8887' },
+    { say: 'One last trap that trips up lots of people. Is the token ID the meaning of the word?', point: [212, 80], bubble: '8887… is that “tea”-ness?' },
+    { say: 'Nope. The ID is just an address, like a shelf number in a library. 8887 isn’t more tea-like than 30. The numbers mean nothing by themselves.', point: [212, 80], bubble: 'just an address' },
+    { say: 'The model uses that address to open one row of a big table, called the embedding matrix.', point: [430, 150], bubble: 'open row 8887' },
     { say: 'That row is a vector: a list of hundreds of learned numbers. GPT-2 small uses 768. This is where meaning starts to live.', point: [430, 320], bubble: 'these bar values are illustrative' },
-    { say: 'How those vectors are learned, and how they capture meaning, is our next chapter. Well done. You now know what happens after you press Enter.', point: [90, 245], bubble: 'see you there!' },
+    { say: 'How those vectors learn meaning is our next chapter. Well done. You now know what happens after you hit Enter.', point: [90, 245], bubble: 'see you there!' },
   ],
   draw: (s) => <EmbedDiagram step={s} />,
   details: <p><b>Illustrative values:</b> the ID 8887 is GPT-2’s real ID for “·tea”. The bar heights are invented for display; real embedding values are learned during training.</p>,
@@ -370,11 +370,11 @@ o200k IDs: [5299, 621, 581, 1520, 17966, 30]`;
 const tokCode = scene({
   id: 'tok-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'Tokenization, in real code.',
   cues: [
-    { say: 'Now the same thing in real Python. I’ll stay right here and walk you through it.', point: lineAt(0), bubble: 'code with John 🤝', step: -1 },
-    { say: 'Auto tokenizer downloads the exact tokenizer GPT-2 was trained with. Same vocabulary, same merge rules, same IDs.', point: lineAt(2), bubble: 'the real one', step: 0 },
+    { say: 'Now the same thing in real Python. I’m right here with you.', point: lineAt(0), bubble: 'code with John 🤝', step: -1 },
+    { say: 'Auto tokenizer downloads the exact tokenizer GPT-2 was trained with. Same vocabulary, same merges, same IDs.', point: lineAt(2), bubble: 'the real one', step: 0 },
     { say: 'tokenize splits the text into token strings. encode goes one step further, and looks up each token’s ID.', point: lineAt(4), bubble: 'text → IDs', step: 1 },
-    { say: 'Then we print the tokens, the IDs, decode them back to text, and check the vocabulary size.', point: lineAt(8), bubble: 'show me', step: 2 },
-    { say: 'And this is the real output. That funny G with a dot is how GPT-2 writes a space. Six tokens, and tea is ID eight eight eight seven, same as in the lab.', point: [300, 330], bubble: 'real output ✓', step: 3 },
+    { say: 'Then we print the tokens and the IDs, decode them back to text, and check the vocabulary size.', point: lineAt(8), bubble: 'show me', step: 2 },
+    { say: 'And here’s the real output. That funny G with a dot is how GPT-2 writes a space. Six tokens, and tea is ID eight eight eight seven, same as in the lab.', point: [300, 330], bubble: 'real output ✓', step: 3 },
   ],
   draw: (step) => {
     const hot = [[], [0, 2], [4, 5], [7, 8, 9, 10], []][step + 1];
@@ -387,16 +387,16 @@ const tokCode = scene({
 
 const tokQuiz = quizScene({
   id: 'tok-test', chapter: CH, title: 'Quick check: tokenization.',
-  outro: 'Tokenization, tested! You now know more about how an LLM reads than most people who use one every day. Next page: where to go deeper.',
+  outro: 'Tokenization, tested! You now know more about how an LLM reads than most people who use one every day.',
   items: [
-    { ask: 'Quiz time! Four questions, and you can skip by turning the page. First: you switch from model A to model B, but keep model A’s tokenizer. What happens?', q: 'You switch from Model A to Model B but keep Model A’s tokenizer. What happens?', options: ['Nothing, tokenizers are interchangeable', 'Model B gets IDs pointing to the wrong vocabulary rows, so its output breaks', 'It only affects cost'], answer: 1,
-      explain: 'Token ID eight eight eight seven means tea only in GPT-2’s vocabulary. In another vocabulary it’s a different token, so the model reads the wrong text.' },
-    { ask: 'Question two. Which statement is true?', q: 'Which statement is true?', options: ['Token ID 8887 is close in meaning to ID 8888', 'A token ID is an address; the meaning lives in the embedding vector it points to', 'Embeddings are lists of token IDs'], answer: 1,
-      explain: 'IDs are just row numbers. Neighbouring IDs aren’t related in meaning. The embedding vectors are where learned meaning lives.' },
+    { ask: 'Quiz time! Skip by turning the page if you like. First: you switch from model A to model B, but keep model A’s tokenizer. What happens?', q: 'You switch from Model A to Model B but keep Model A’s tokenizer. What happens?', options: ['Nothing, tokenizers are interchangeable', 'Model B gets IDs pointing to the wrong vocabulary rows, so its output breaks', 'It only affects cost'], answer: 1,
+      explain: 'ID eight eight eight seven means tea only in GPT-2’s vocabulary. In another vocabulary it’s a different token, so the model reads the wrong text.' },
+    { ask: 'Question two. Which one is true?', q: 'Which statement is true?', options: ['Token ID 8887 is close in meaning to ID 8888', 'A token ID is an address; the meaning lives in the embedding vector it points to', 'Embeddings are lists of token IDs'], answer: 1,
+      explain: 'IDs are just row numbers. Neighbouring IDs aren’t related in meaning. The embedding vectors are where meaning lives.' },
     { ask: 'Question three. You’re building a model for English, Urdu, Chinese and code. Which tokenizer fits best?', q: 'A model for English, Urdu, Chinese and code. Which tokenizer fits best?', options: ['Word-level, 50k English words', 'Byte-level subwords trained on multilingual data, with a large vocabulary', 'Character-level only'], answer: 1,
-      explain: 'Bytes can represent any script, training on multilingual data gives every language good merges, and a bigger vocabulary means fewer tokens for non-English text.' },
+      explain: 'Bytes can write any script. Training on many languages gives each one good merges. And a bigger vocabulary means fewer tokens for non-English text.' },
     { ask: 'Last one. Why does the name Ubaid become two tokens in GPT-2?', q: 'Why does “Ubaid” become two tokens in GPT-2?', options: ['The tokenizer is broken', 'The name wasn’t frequent enough in the training text to earn its own merge', 'Names are always split'], answer: 1,
-      explain: 'BPE only creates tokens for frequent pairs. A rarer name gets built from smaller pieces that were frequent.' },
+      explain: 'BPE only makes tokens for frequent pairs. A rarer name gets built from smaller pieces that were frequent.' },
   ],
 });
 

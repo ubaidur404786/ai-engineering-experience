@@ -53,11 +53,11 @@ function LossDiagram({ step }: { step: number }) {
 const lossScene = scene({
   id: 'lr-loss', chapter: CH, stage: 'imagine', kicker: 'Part 1 · How a network learns', title: 'Loss: how wrong am I?',
   cues: [
-    { say: 'Last chapter I picked the weights myself. Now the network must find them alone. Step one: it guesses. Here are its guesses for three days.', point: [240, 140], bubble: 'just guessing 🤔' },
-    { say: 'Then we check the truth. Did I actually go? Monday yes, Tuesday and Wednesday no.', point: [380, 140], bubble: 'the real answer' },
-    { say: 'For each day: guess minus truth, then squared, so it’s always positive. Tuesday is the big mistake: it said zero point eight, but I stayed home.', point: [500, 164], bubble: 'Tuesday = oops' },
-    { say: 'Average the errors and you get one number: the loss. It means: how wrong am I, right now?', point: [300, 286], bubble: 'loss 📉' },
-    { say: 'And here’s the whole goal of learning: make that number small. That’s it.', point: [300, 356], bubble: 'small loss = smart' },
+    { say: 'Last chapter, I picked the weights myself. Now the network has to find them alone. Step one: it guesses. Here are its guesses for three days.', point: [240, 140], bubble: 'just guessing 🤔' },
+    { say: 'Then we check what really happened. Did I go? Monday yes. Tuesday and Wednesday, no.', point: [380, 140], bubble: 'the real answer' },
+    { say: 'For each day: guess minus truth, then squared, so it’s always positive. Tuesday is the big miss. It said zero point eight, but I stayed on the couch.', point: [500, 164], bubble: 'Tuesday = oops' },
+    { say: 'Average those errors, and you get one number: the loss. It answers: how wrong am I, right now?', point: [300, 286], bubble: 'loss 📉' },
+    { say: 'And the whole goal of learning? Make that number small. That’s it.', point: [300, 356], bubble: 'small loss = smart' },
   ],
   draw: (step) => <LossDiagram step={step} />,
   details: <p>This one is called <b>mean squared error</b> (MSE): (0.01 + 0.64 + 0.09) / 3 ≈ 0.25. LLMs use a cousin called <b>cross-entropy</b>: it punishes the model when it gave the right next word a low chance. Different formula, same job: one number for “how wrong”.</p>,
@@ -88,11 +88,11 @@ const descentScene = scene({
   id: 'lr-descent', chapter: CH, stage: 'visualize', kicker: 'Gradient descent', title: 'Gradient descent: walk downhill.',
   cues: [
     { say: 'Picture the loss as a hill. Left and right is a weight. Up and down is how wrong we are. We want the bottom of the valley.', point: [300, 300], bubble: 'find the bottom' },
-    { say: 'Our network starts somewhere random, high on the hill. Very wrong.', point: [110, 96], bubble: 'random start 🎲' },
-    { say: 'Imagine standing on a hill in fog. You can’t see the bottom, but your feet feel which way is down. That feeling is the gradient.', point: [200, 140], bubble: 'gradient = slope' },
-    { say: 'So we take a small step downhill. How big a step? That’s the learning rate. Too big and you jump over the valley. Too small and it takes forever.', point: [330, 196], bubble: 'step size 👣' },
-    { say: 'Step, check the slope, step again, until we reach the bottom. There the loss is smallest, so the weight is the best one.', point: [300, 344], bubble: 'made it ✓' },
-    { say: 'That’s gradient descent. Fancy name for: walk downhill, step by step.', point: [300, 384], bubble: 'downhill 🏔️' },
+    { say: 'Our network starts somewhere random, high up. Very wrong.', point: [110, 96], bubble: 'random start 🎲' },
+    { say: 'Imagine standing on that hill in thick fog. You can’t see the bottom, but your feet can feel which way is down. That feeling is the gradient.', point: [200, 140], bubble: 'gradient = slope' },
+    { say: 'So we take a small step downhill. How big? That’s the learning rate. Too big, you jump right over the valley. Too small, you’re there next year.', point: [330, 196], bubble: 'step size 👣' },
+    { say: 'Step, feel the slope, step again, until we hit the bottom. There, the loss is smallest, so that weight is the best one.', point: [300, 344], bubble: 'made it ✓' },
+    { say: 'That’s gradient descent. A fancy name for: walk downhill, one step at a time.', point: [300, 384], bubble: 'downhill 🏔️' },
   ],
   draw: (step) => <DescentDiagram step={step} />,
   details: <p>The update rule is <b>w = w − learning_rate × gradient</b>. Real networks have millions of weights, so the “hill” has millions of directions, but the rule is the same for every weight. Tools like <b>Adam</b> are smarter ways of choosing the step size.</p>,
@@ -125,12 +125,12 @@ function BackDiagram({ step }: { step: number }) {
 const backScene = scene({
   id: 'lr-backprop', chapter: CH, stage: 'behind', kicker: 'Backpropagation', title: 'Backpropagation: share the blame.',
   cues: [
-    { say: 'One problem. A network has tons of weights. When the answer is wrong, whose fault is it?', point: [300, 180], bubble: 'who did it? 🕵️' },
+    { say: 'One problem. A network has tons of weights. When the answer’s wrong, whose fault is it?', point: [300, 180], bubble: 'who did it? 🕵️' },
     { say: 'Start at the end. The output was wrong, so we know the loss.', point: [490, 224], bubble: 'the mistake' },
-    { say: 'Now walk backwards. Each weight just before the output gets its share of the blame: a big share if it pushed hard in the wrong direction.', point: [400, 314], bubble: 'backwards ⬅️' },
-    { say: 'And keep going, layer by layer, all the way back to the start. That backwards walk is backpropagation.', point: [200, 180], bubble: 'layer by layer' },
+    { say: 'Now walk backwards. Each weight just before the output gets its share of the blame. A big share if it pushed hard the wrong way.', point: [400, 314], bubble: 'backwards ⬅️' },
+    { say: 'Keep going, layer by layer, all the way back to the start. That backwards walk is backpropagation.', point: [200, 180], bubble: 'layer by layer' },
     { say: 'Now every weight knows its slope, so every weight takes a tiny step downhill.', point: [300, 356], bubble: 'nudge 👉' },
-    { say: 'Guess, measure the loss, share the blame, nudge, repeat. Millions of times. That loop is how every network learns, even ChatGPT.', point: [300, 394], bubble: 'the learning loop 🔁' },
+    { say: 'Guess, measure the loss, share the blame, nudge, repeat. Millions of times. That loop is how every network learns. Even ChatGPT.', point: [300, 394], bubble: 'the learning loop 🔁' },
   ],
   draw: (step) => <BackDiagram step={step} />,
   details: <p>Backpropagation is the <b>chain rule</b> from calculus applied layer by layer: it computes the gradient for every weight in one backward pass. Libraries like PyTorch do it for you with one line: <b>loss.backward()</b>. One full round over the training data is called an <b>epoch</b>.</p>,
@@ -157,11 +157,11 @@ const CODE = [
 const codeScene = scene({
   id: 'lr-python', chapter: CH, stage: 'python', kicker: 'Implement with Python', title: 'Watch a network learn, in thirteen lines.',
   cues: [
-    { say: 'Code time! The smallest learner ever: one weight. The data hides a secret rule: y is two times x. The network doesn’t know that.', point: lineAt(2), bubble: 'secret: × 2', step: -1 },
-    { say: 'It starts with a bad guess, zero. And a small learning rate.', point: lineAt(3), bubble: 'bad start', step: 0 },
+    { say: 'Code time! The smallest learner ever: one weight. The data hides a secret rule: y equals two times x. The network has no idea.', point: lineAt(2), bubble: 'secret: × 2', step: -1 },
+    { say: 'It starts with a terrible guess, zero. And a small learning rate.', point: lineAt(3), bubble: 'bad start', step: 0 },
     { say: 'Inside the loop: guess, then the loss. How wrong?', point: lineAt(7), bubble: 'guess + loss', step: 1 },
-    { say: 'The gradient says which way is downhill, and this line takes the step. That’s gradient descent in two lines!', point: lineAt(9), bubble: 'downhill 🏔️', step: 2 },
-    { say: 'Real output: the loss drops from eighteen, to two, to almost nothing. And w climbs to one point nine, almost two. It found the secret rule by itself!', point: [300, 360], bubble: 'it learned! 🎉', step: 3 },
+    { say: 'The gradient says which way is downhill, and this line takes the step. Gradient descent, in two lines!', point: lineAt(9), bubble: 'downhill 🏔️', step: 2 },
+    { say: 'Real output: the loss drops from eighteen, to two, to almost nothing. And w climbs to one point nine. Almost two. It cracked the secret rule by itself!', point: [300, 360], bubble: 'it learned! 🎉', step: 3 },
   ],
   draw: (step) => {
     const hot = [[], [1, 2, 3, 4], [5, 6, 7], [8, 9], []][step + 1];
@@ -174,14 +174,14 @@ const codeScene = scene({
 
 const quiz = quizScene({
   id: 'lr-test', chapter: CH, title: 'Quick check: learning.',
-  outro: 'Brilliant! You now know how every neural network learns. Turn the page!',
+  outro: 'Brilliant! Now you know how every neural network learns.',
   items: [
     { ask: 'Quiz time! First one: what is the loss?', q: 'What is the loss?', options: ['How many weights the model has', 'One number for how wrong the model is', 'The speed of the computer'], answer: 1,
-      explain: 'The loss is one number for how wrong we are. Learning means making it small.' },
+      explain: 'The loss is one number for how wrong we are. Learning means shrinking it.' },
     { ask: 'Question two. In gradient descent, what does the learning rate control?', q: 'What does the learning rate control?', options: ['The size of each step downhill', 'How much data we have', 'The number of layers'], answer: 0,
-      explain: 'It’s the step size. Too big jumps over the valley, too small takes forever.' },
+      explain: 'The step size. Too big jumps over the valley, too small takes forever.' },
     { ask: 'Question three. Backpropagation walks through the network in which direction?', q: 'Backpropagation goes…', options: ['Input to output', 'Output back to input', 'Randomly'], answer: 1,
-      explain: 'Backwards, from the mistake at the output back to the start, sharing the blame.' },
+      explain: 'Backwards. From the mistake at the output, all the way back, sharing the blame.' },
     { ask: 'Last one. Put the learning loop in order.', q: 'The learning loop is…', options: ['Nudge, guess, delete', 'Guess, loss, blame, nudge, repeat', 'Loss, stop'], answer: 1,
       explain: 'Guess, loss, blame, nudge, repeat. Millions of times.' },
   ],
@@ -212,7 +212,7 @@ const nextScene = scene({
   id: 'lr-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
     { say: 'Look at that. You know the loop behind every AI: guess, loss, gradient, backprop, nudge.', point: [150, 140], bubble: 'Learning ✓' },
-    { say: 'But careful. A low loss doesn’t always mean the model is smart. Maybe it just memorised the answers, like a student before an exam. Next chapter: how do we know it really learned? Turn the page, bro!', point: [465, 270], bubble: 'next page →' },
+    { say: 'But careful. A low loss doesn’t always mean a smart model. Maybe it just memorised the answers, like a student cramming the night before. So how do we know it really learned? Next chapter.', point: [465, 270], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });
