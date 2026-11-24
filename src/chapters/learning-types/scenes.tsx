@@ -293,12 +293,7 @@ function NextDiagram({ step }: { step: number }) {
       {step >= 1 && (
         <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
           <Box x={355} y={95} w={220} h={110} label="Next: one neuron" sub="what’s inside the 🧠 box" tone="night" hot />
-          <text x="465" y="232" textAnchor="middle" className="cap">(being written)</text>
-        </motion.g>
-      )}
-      {step >= 2 && (
-        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Box x={355} y={262} w={220} h={80} label="Meanwhile: Tokenization" sub="next page, Part 2 preview" tone="teal" />
+          <text x="465" y="232" textAnchor="middle" className="cap">next page →</text>
         </motion.g>
       )}
     </g>
@@ -309,8 +304,7 @@ const nextScene = scene({
   id: 'lt-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
     { say: 'Nice work! Three ways to learn, plus the secret of how GPT reads the internet.', point: [150, 150], bubble: 'Ways to learn ✓' },
-    { say: 'All this time I drew the model as a little brain box. Next chapter, we open the box and meet one neuron. I’m writing it right now.', point: [465, 150], bubble: 'coming soon' },
-    { say: 'Until then, the next page jumps ahead to tokenization, where you’ll see those next-word quizzes up close. See you there, bro!', point: [465, 300], bubble: 'next page →' },
+    { say: 'All this time I drew the model as a little brain box. Next chapter, we open the box and meet one neuron. Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

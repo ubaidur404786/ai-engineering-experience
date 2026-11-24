@@ -50,10 +50,11 @@
 | Part 0 complete | two sides, four roles, AI⊃ML⊃DL⊃GenAI, foundation models + LLM/SLM sizes, open vs closed, model → app layers, lifecycle loop, quiz (skippable), What's next scene |
 | Part 1 · Data | why data, structured vs unstructured, features & labels, cleaning, train/val/test, Python at the board (pandas + scikit-learn, real output), John-hosted quiz, What's next |
 | Part 1 · Ways a machine learns | the question (who writes the answers?), supervised, unsupervised (clustering), self-supervised (next-word quiz = how GPT learns), side by side + RL teaser, Python at the board (LogisticRegression, KMeans, next-word pairs; real output), John-hosted quiz, What's next |
+| Part 1 · One neuron, then a network | beach-decision example throughout: a neuron (clues in, one answer out), weights + bias, activation (step, sigmoid, ReLU), layers + forward propagation, Python at the board (numpy neuron + tiny network; real output), John-hosted quiz, What's next |
 | Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python at the board, John-hosted quiz, references |
 
 ## Next chapter
-Reading order next: **Part 1 · Foundations**, chapter `neuron`, then `learning`, `fit`. Insert each after `learningTypesScenes` in registry.ts and update the `lt-next` scene's "next" box.
+Reading order next: **Part 1 · Foundations**, chapter `learning`, then `fit`. Insert each after `neuronScenes` in registry.ts and update the `nn-next` scene's "next" box.
 After Part 1, continue Part 2 with `embeddings-in` (token IDs → vectors); the tokenization chapter already ends by promising it.
 
 ## Known gaps / ideas

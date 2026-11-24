@@ -4,6 +4,7 @@ import { part0 } from './introScenes';
 import { welcomeScenes } from './welcomeScenes';
 import { dataScenes } from './data/scenes';
 import { learningTypesScenes } from './learning-types/scenes';
+import { neuronScenes } from './neuron/scenes';
 import { tokenizationScenes, tokenizationEnd } from './tokenization/scenes';
 import { tokenization } from './tokenization';
 
@@ -16,6 +17,7 @@ export const SPREADS: Spread[] = [
   ...part0,
   ...dataScenes,
   ...learningTypesScenes,
+  ...neuronScenes,
   ...tokenizationScenes,
   ...tokenizationEnd,
   ...keep(['tok-explore']),
