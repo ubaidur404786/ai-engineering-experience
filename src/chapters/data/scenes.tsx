@@ -12,8 +12,8 @@ import { Code } from '../../book/ui';
 const CH = 'data';
 
 /* small SVG table used by several scenes */
-type Cell = string | number;
-function Table({ x, y, cols, rows, w, hotCols = [], labelCol, strike = [], flag = [] }: {
+export type Cell = string | number;
+export function Table({ x, y, cols, rows, w, hotCols = [], labelCol, strike = [], flag = [] }: {
   x: number; y: number; cols: string[]; rows: Cell[][]; w: number[];
   hotCols?: number[]; labelCol?: number; strike?: number[]; flag?: number[];
 }) {
@@ -329,13 +329,7 @@ function NextDiagram({ step }: { step: number }) {
       {step >= 1 && (
         <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
           <Flow d="M300 150 L350 150" count={3} dur={1} color="#c4974a" />
-          <Box x={355} y={95} w={220} h={110} label="Next: ways to learn" sub="supervised, unsupervised…" tone="night" hot />
-          <text x="465" y="232" textAnchor="middle" className="cap">(being written)</text>
-        </motion.g>
-      )}
-      {step >= 2 && (
-        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Box x={355} y={262} w={220} h={80} label="Meanwhile: Tokenization" sub="next page, Part 2 preview" tone="teal" />
+          <Box x={355} y={95} w={220} h={110} label="Next: ways to learn" sub="next page →" tone="night" hot />
         </motion.g>
       )}
     </g>
@@ -346,8 +340,7 @@ const nextScene = scene({
   id: 'data-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
     { say: 'Look at you. Six data ideas, and one real Python script. Most people skip this part, you didn’t.', point: [150, 150], bubble: 'Data ✓' },
-    { say: 'Next in Part 1: the ways a machine learns. Where do the answers come from, and how can a model learn with no labels at all? I’m writing it right now.', point: [465, 150], bubble: 'coming soon' },
-    { say: 'Until then, the next page jumps ahead to tokenization: how an LLM reads your text. See you there, bro!', point: [465, 300], bubble: 'next page →' },
+    { say: 'Next in Part 1: the ways a machine learns. Where do the answers come from, and how can a model learn with no labels at all? Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

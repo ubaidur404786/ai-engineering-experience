@@ -3,6 +3,7 @@ import { CURRICULUM } from '../data/curriculum';
 import { part0 } from './introScenes';
 import { welcomeScenes } from './welcomeScenes';
 import { dataScenes } from './data/scenes';
+import { learningTypesScenes } from './learning-types/scenes';
 import { tokenizationScenes, tokenizationEnd } from './tokenization/scenes';
 import { tokenization } from './tokenization';
 
@@ -14,6 +15,7 @@ export const SPREADS: Spread[] = [
   ...welcomeScenes,
   ...part0,
   ...dataScenes,
+  ...learningTypesScenes,
   ...tokenizationScenes,
   ...tokenizationEnd,
   ...keep(['tok-explore']),

@@ -49,10 +49,11 @@
 | Welcome (3 scenes) | Meet John (not alone, two pages, stop me anytime) · Why this book isn't boring · Skill journey (what you can do at the end) |
 | Part 0 complete | two sides, four roles, AI⊃ML⊃DL⊃GenAI, foundation models + LLM/SLM sizes, open vs closed, model → app layers, lifecycle loop, quiz (skippable), What's next scene |
 | Part 1 · Data | why data, structured vs unstructured, features & labels, cleaning, train/val/test, Python at the board (pandas + scikit-learn, real output), John-hosted quiz, What's next |
+| Part 1 · Ways a machine learns | the question (who writes the answers?), supervised, unsupervised (clustering), self-supervised (next-word quiz = how GPT learns), side by side + RL teaser, Python at the board (LogisticRegression, KMeans, next-word pairs; real output), John-hosted quiz, What's next |
 | Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python at the board, John-hosted quiz, references |
 
 ## Next chapter
-Reading order next: **Part 1 · Foundations**, chapter `learning-types` (supervised, unsupervised, self-supervised), then `neuron`, `learning`, `fit`. Insert each after `dataScenes` in registry.ts and update the `data-next` scene's "next" box.
+Reading order next: **Part 1 · Foundations**, chapter `neuron`, then `learning`, `fit`. Insert each after `learningTypesScenes` in registry.ts and update the `lt-next` scene's "next" box.
 After Part 1, continue Part 2 with `embeddings-in` (token IDs → vectors); the tokenization chapter already ends by promising it.
 
 ## Known gaps / ideas
