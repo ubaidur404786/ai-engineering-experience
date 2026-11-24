@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import Avatar from './Avatar';
+import Teacher from './Teacher';
 import { getController, useScene, useVoice, voiceStore, type Controller, type Cue } from './store';
 import type { Spread, Stage } from '../book/types';
 import './scene.css';
@@ -42,7 +42,7 @@ function GuidePanel({ c, def }: { c: Controller; def: SceneDef }) {
       <p className="kicker">{def.kicker}</p>
       <h1 className="guide-title">{def.title}</h1>
       <div className="guide-body">
-        <Avatar talking={s.speaking} gesture={!!cue.point && s.idx > 0} />
+        <div className="speaker"><span className={`speaker-dot ${s.speaking ? 'on' : ''}`} />Zayd{s.speaking ? ' is explaining…' : ''}</div>
         <motion.blockquote key={s.idx} className="speech" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} aria-live="polite">
           {cue.say}
         </motion.blockquote>
@@ -89,38 +89,16 @@ function StagePanel({ c, def }: { c: Controller; def: SceneDef }) {
   return (
     <div className="stage-panel">
       <div className="stage-box">
-        <svg viewBox={`0 0 ${W} ${H}`} className="stage-svg" role="img" aria-label={cue.say}>
+        <svg viewBox={`0 0 ${W} ${H + 240}`} className="stage-svg" role="img" aria-label={cue.say}>
+          <rect x="0" y="0" width={W} height={H} rx="14" className="board" />
           {def.draw(step)}
+          <Teacher target={cue.point} talking={s.speaking} comment={cue.bubble} />
         </svg>
-        <Pointer cue={cue} k={s.idx} />
         <div className="stage-sub" aria-hidden="true">{cue.say}</div>
         <div className="mini-ctrl"><Controls c={c} cues={def.cues} /></div>
       </div>
       {def.below}
     </div>
-  );
-}
-
-/** Animated pointer + "thought" bubble anchored to a point on the diagram. */
-function Pointer({ cue, k }: { cue: Cue; k: number }) {
-  if (!cue.point) return null;
-  const [x, y] = cue.point;
-  const left = (x / W) * 100, top = (y / H) * 100;
-  const flip = x > W * 0.6; // keep the bubble inside the stage
-  const below = y < H * 0.28;
-  return (
-    <motion.div className="pointer" initial={false} animate={{ left: `${left}%`, top: `${top}%` }} transition={{ type: 'spring', stiffness: 90, damping: 16 }}>
-      <span className="pulse" />
-      <motion.svg className="hand" viewBox="0 0 24 24" width="30" height="30" animate={{ y: [0, -4, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
-        <path d="M9 11V4.5a1.5 1.5 0 0 1 3 0V10h.5V8.5a1.5 1.5 0 0 1 3 0V10h.5V9a1.5 1.5 0 0 1 3 0v5.5c0 3.6-2.4 6.5-6 6.5h-1c-2 0-3.4-.8-4.6-2.4L4.6 15a1.5 1.5 0 0 1 2.3-1.9L9 15V11z" fill="#f2ebdd" stroke="#1c222a" strokeWidth="1.2" />
-      </motion.svg>
-      {cue.bubble && (
-        <motion.div key={k} className={`thought ${flip ? 'flip' : ''} ${below ? 'below' : ''}`} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.35, type: 'spring', stiffness: 220, damping: 18 }}>
-          {cue.bubble}
-          <span className="dots"><i /><i /></span>
-        </motion.div>
-      )}
-    </motion.div>
   );
 }
 
