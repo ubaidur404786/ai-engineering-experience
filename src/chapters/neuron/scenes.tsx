@@ -256,12 +256,7 @@ function NextDiagram({ step }: { step: number }) {
       {step >= 1 && (
         <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
           <Box x={355} y={95} w={220} h={110} label="Next: how it learns" sub="finding good weights" tone="night" hot />
-          <text x="465" y="232" textAnchor="middle" className="cap">(being written)</text>
-        </motion.g>
-      )}
-      {step >= 2 && (
-        <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Box x={355} y={262} w={220} h={80} label="Meanwhile: Tokenization" sub="next page, Part 2 preview" tone="teal" />
+          <text x="465" y="232" textAnchor="middle" className="cap">next page →</text>
         </motion.g>
       )}
     </g>
@@ -272,8 +267,7 @@ const nextScene = scene({
   id: 'nn-next', chapter: CH, kicker: 'What’s next?', title: 'What’s next?',
   cues: [
     { say: 'Look at you! You opened the brain box: neurons, weights, bias, activations, and a whole network.', point: [150, 150], bubble: 'Neurons ✓' },
-    { say: 'But one question is left. I picked the weights myself: three, two, minus five. How does a network find good weights on its own? That’s the next chapter, and I’m writing it right now.', point: [465, 150], bubble: 'coming soon' },
-    { say: 'Until then, the next page jumps ahead to tokenization. See you there, bro!', point: [465, 300], bubble: 'next page →' },
+    { say: 'But one question is left. I picked the weights myself: three, two, minus five. How does a network find good weights on its own? That’s the next chapter. Turn the page, bro!', point: [465, 150], bubble: 'next page →' },
   ],
   draw: (step) => <NextDiagram step={step} />,
 });

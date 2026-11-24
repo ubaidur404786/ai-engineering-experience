@@ -51,10 +51,14 @@
 | Part 1 · Data | why data, structured vs unstructured, features & labels, cleaning, train/val/test, Python at the board (pandas + scikit-learn, real output), John-hosted quiz, What's next |
 | Part 1 · Ways a machine learns | the question (who writes the answers?), supervised, unsupervised (clustering), self-supervised (next-word quiz = how GPT learns), side by side + RL teaser, Python at the board (LogisticRegression, KMeans, next-word pairs; real output), John-hosted quiz, What's next |
 | Part 1 · One neuron, then a network | beach-decision example throughout: a neuron (clues in, one answer out), weights + bias, activation (step, sigmoid, ReLU), layers + forward propagation, Python at the board (numpy neuron + tiny network; real output), John-hosted quiz, What's next |
+| Part 1 · How a network learns | loss (beach guesses, MSE), gradient descent (ball on a hill, learning rate), backpropagation (blame flows backwards), Python: one-weight learner (real output), quiz, What's next |
+| Part 1 · Is the model any good? | three students (underfit / good / overfit), train vs validation loss + early stopping, accuracy / precision / recall (spam filter), Python grading (real output), quiz, Part 1 complete |
+| Part 2 · Planning a foundation model | four decisions (domain, size, data, budget), pre-training overview, quiz |
+| Part 2 · Pre-training data | collection (web, books, code; 15T tokens), cleaning line (strip, dedup, quality filter, PII), Python cleaner (real output), quiz, What's next → Tokenization |
 | Tokenization (Part 2) | 5 scenes + Tokenizer Lab (real GPT-2/cl100k/o200k in browser), BPE trainer lab, Python at the board, John-hosted quiz, references |
 
 ## Next chapter
-Reading order next: **Part 1 · Foundations**, chapter `learning`, then `fit`. Insert each after `neuronScenes` in registry.ts and update the `nn-next` scene's "next" box.
+Reading order is now continuous up to Tokenization. Next to write: Part 2 `embeddings-in` (after `tokenizationEnd`/`tok-explore` in registry.ts).
 After Part 1, continue Part 2 with `embeddings-in` (token IDs → vectors); the tokenization chapter already ends by promising it.
 
 ## Known gaps / ideas
