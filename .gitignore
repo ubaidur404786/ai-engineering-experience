@@ -3,5 +3,3 @@ dist
 .claude/settings.local.json
 *.pptx
 *.tsbuildinfo
-scratch/
-.venv-tts/
