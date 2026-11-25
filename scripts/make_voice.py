@@ -29,7 +29,7 @@ def spoken(text: str) -> str:
     return text.replace("Ubaid", "Oo-bayd").replace("RAG", "rag").replace("ReLU", "ray-loo").replace("U b, and a i d", "U B, and A I D")
 
 # ---- Energetic delivery: each sentence gets its own pace, pitch and loudness, then a fitting pause ----
-ENERGY_FILES = ["welcomeScenes"]                  # chapters recorded with the energetic delivery (trial)
+ENERGY_FILES = ["src/chapters/"]            # every chapter so far (Parts 0–2) uses the energetic welcome voice
 ENERGY_VOICE = "en-US-AndrewMultilingualNeural"
 SR = 24000
 HYPE = re.compile(r"!|Wow|Boom|Lucky|haunted|Awkward|snacks|wallet|pillow|jealous|hurt|Sneaky|Hello|brave|hype")
@@ -56,10 +56,16 @@ def pcm(mp3: bytes) -> bytes:
                           input=mp3, capture_output=True, check=True).stdout
 
 async def say_bytes(text, voice, rate, pitch, volume="+0%"):
-    out = b""
-    async for c in edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, volume=volume).stream():
-        if c["type"] == "audio": out += c["data"]
-    return out
+    for attempt in range(5):  # the service sometimes drops a request; retry with a short backoff
+        try:
+            out = b""
+            async for c in edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, volume=volume).stream():
+                if c["type"] == "audio": out += c["data"]
+            if out: return out
+        except edge_tts.exceptions.NoAudioReceived:
+            pass
+        await asyncio.sleep(2 * (attempt + 1))
+    raise RuntimeError(f"no audio after retries: {text[:60]}")
 
 async def energetic(line, dest):
     ss = sentences(spoken(line)); raw = b""
@@ -77,7 +83,11 @@ async def main():
         for l in re.findall(r"\b(?:say|ask|explain|outro): '((?:[^'\\]|\\.)*)'", f.read_text(encoding="utf-8")):
             lines[l] = lines.get(l, False) or hot
     redo = "--redo-energy" in sys.argv
-    todo = [l for l in sorted(lines) if not (OUT / f"{fnv1a(l)}.mp3").exists() or (redo and lines[l])]
+    # --skip-newer=MIN: when redoing, keep clips re-recorded in the last MIN minutes (resume after a crash)
+    fresh = next((float(a.split("=")[1]) for a in sys.argv if a.startswith("--skip-newer=")), None)
+    import time
+    def stale(f): return fresh is None or time.time() - f.stat().st_mtime > fresh * 60
+    todo = [l for l in sorted(lines) if not (OUT / f"{fnv1a(l)}.mp3").exists() or (redo and lines[l] and stale(OUT / f"{fnv1a(l)}.mp3"))]
     print(f"{len(lines)} lines, {len(todo)} to record")
     sem = asyncio.Semaphore(8)  # record several lines at once
     async def one(l):

@@ -129,3 +129,24 @@ export function smoothSegments(pts: { x: number; y: number }[]) {
     return `M${p1.x} ${p1.y} C${c1.x} ${c1.y} ${c2.x} ${c2.y} ${p2.x} ${p2.y}`;
   });
 }
+
+/** An emoji that gently bobs (or pulses when `hot`). Cheap: one transform, no filters. */
+export function Emo({ x, y, e, size = 22, hot, delay = 0 }: { x: number; y: number; e: string; size?: number; hot?: boolean; delay?: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`} pointerEvents="none">
+      <motion.g animate={hot ? { scale: [1, 1.3, 1], rotate: [0, -10, 10, 0] } : { y: [0, -4, 0] }} transition={{ duration: hot ? 1 : 2.4, repeat: Infinity, delay, ease: 'easeInOut' }}>
+        <text textAnchor="middle" dominantBaseline="central" fontSize={size}>{e}</text>
+      </motion.g>
+    </g>
+  );
+}
+
+/** An emoji that travels along a path forever (a "data packet"). */
+export function Courier({ d, e, dur = 2, begin = 0, size = 16 }: { d: string; e: string; dur?: number; begin?: number; size?: number }) {
+  return (
+    <g pointerEvents="none">
+      <text textAnchor="middle" dominantBaseline="central" fontSize={size}>{e}</text>
+      <animateMotion dur={`${dur}s`} begin={`${begin}s`} repeatCount="indefinite" path={d} />
+    </g>
+  );
+}

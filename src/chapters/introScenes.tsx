@@ -1,6 +1,11 @@
 import { motion } from 'motion/react';
 import { scene, Box, Flow } from '../scene/Scene';
 import { quizScene } from '../scene/quizScene';
+import { FxDefs, Twinkles, Burst, Pop, Halo, Shine, Emo, Courier } from '../scene/fx';
+
+/* Motion budget for these pages: gradients, emoji and transforms only (no blur
+   filters on moving things), a handful of looping items per page, and bursts
+   that play once. Keeps the book smooth on cheap laptops and phones. */
 
 /* =====================================================================
    INTRO + PART 0. Narrated by John (see src/scene/Teacher.tsx).
@@ -20,28 +25,47 @@ const ROWS: [string, string][] = [
 function SidesDiagram({ step }: { step: number }) {
   return (
     <g>
-      <motion.circle cx="140" cy="110" r="78" className="side-c builder" animate={{ opacity: step === 2 ? 0.35 : 1 }} />
-      <text x="140" y="104" textAnchor="middle" className="side-t">Builder side</text>
-      <text x="140" y="126" textAnchor="middle" className="ssub paper">data · models · training</text>
-      <motion.circle cx="460" cy="110" r="78" className="side-c user" animate={{ opacity: step === 1 ? 0.35 : 1 }} />
-      <text x="460" y="104" textAnchor="middle" className="side-t">User side</text>
-      <text x="460" y="126" textAnchor="middle" className="ssub paper">apps · APIs · deployment</text>
+      <FxDefs />
+      <Twinkles n={10} seed={31} />
+      {/* the coin: two sides spin in */}
+      {[{ x: 140, cls: 'builder', t: 'Builder side', s: 'data · models · training', dim: step === 2, hot: step === 1, icons: ['📊', '🧪', '🏋️'] },
+        { x: 460, cls: 'user', t: 'User side', s: 'apps · APIs · deployment', dim: step === 1, hot: step === 2, icons: ['📱', '🔌', '🚀'] }].map((c, k) => (
+        <motion.g key={c.cls} initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: c.dim ? 0.35 : 1, scale: c.hot ? 1.06 : 1 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 14, delay: k * 0.2 }} style={{ originX: `${c.x}px`, originY: '110px' }}>
+          {c.hot && <Halo x={c.x} y={110} r={110} teal={k === 0} />}
+          <circle cx={c.x} cy="110" r="78" className={`side-c ${c.cls}`} />
+          <text x={c.x} y="104" textAnchor="middle" className="side-t">{c.t}</text>
+          <text x={c.x} y="126" textAnchor="middle" className="ssub paper">{c.s}</text>
+          {c.icons.map((e, i) => <Emo key={e} x={c.x - 34 + i * 34} y={66} e={e} size={18} hot={c.hot} delay={i * 0.3} />)}
+        </motion.g>
+      ))}
       {step >= 3 && <Flow d="M220 110 L380 110" color="#c4974a" count={4} />}
       {step >= 3 && (
-        <motion.g initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ originX: '300px', originY: '110px' }}>
-          <circle cx="300" cy="110" r="34" className="ai-core" />
-          <text x="300" y="106" textAnchor="middle" className="core-t">AI</text>
-          <text x="300" y="122" textAnchor="middle" className="core-t sm">engineer</text>
-        </motion.g>
+        <Pop x={300} y={110}>
+          <Halo x={0} y={0} r={60} />
+          <motion.circle r="38" fill="none" stroke="#e2bd7a" strokeDasharray="3 6" strokeWidth="2" animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }} />
+          <circle r="34" className="ai-core" />
+          <text y="-4" textAnchor="middle" className="core-t">AI</text>
+          <text y="12" textAnchor="middle" className="core-t sm">engineer</text>
+          {step === 3 && <Emo x={0} y={-52} e="🫵" size={22} hot />}
+        </Pop>
       )}
+      {step === 3 && <Burst x={300} y={110} k="core" n={16} spread={90} />}
       {step >= 4 && ROWS.map(([b, u], i) => (
-        <motion.g key={b} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.25 }}>
-          <rect x="40" y={220 + i * 46} width="220" height="36" rx="8" className="row-b" />
-          <text x="150" y={243 + i * 46} textAnchor="middle" className="chip-t sm">{b}</text>
-          <path d={`M264 ${238 + i * 46} L336 ${238 + i * 46}`} className="flow on" />
-          <rect x="340" y={220 + i * 46} width="220" height="36" rx="8" className="row-u" />
-          <text x="450" y={243 + i * 46} textAnchor="middle" className="chip-t sm">{u}</text>
-        </motion.g>
+        <g key={b}>
+          <motion.g initial={{ opacity: 0, x: -80 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 140, damping: 16, delay: i * 0.25 }}>
+            <rect x="40" y={220 + i * 46} width="220" height="36" rx="8" className="row-b" />
+            <text x="150" y={243 + i * 46} textAnchor="middle" className="chip-t sm">{b}</text>
+          </motion.g>
+          <motion.g initial={{ opacity: 0, x: 80 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 140, damping: 16, delay: i * 0.25 }}>
+            <rect x="340" y={220 + i * 46} width="220" height="36" rx="8" className="row-u" />
+            <text x="450" y={243 + i * 46} textAnchor="middle" className="chip-t sm">{u}</text>
+          </motion.g>
+          <motion.g initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 + i * 0.25 }} style={{ originX: '300px', originY: `${238 + i * 46}px` }}>
+            <path d={`M264 ${238 + i * 46} L336 ${238 + i * 46}`} className="flow on" />
+            <text x="300" y={238 + i * 46} textAnchor="middle" dominantBaseline="central" fontSize="14">🔗</text>
+          </motion.g>
+        </g>
       ))}
     </g>
   );
@@ -69,19 +93,31 @@ const ROLES = [
   { name: 'AI Engineer', does: 'builds products on top of models', x: 320, y: 230, tone: 'night' as const },
 ];
 
+const ROLE_ICONS = ['📊', '⚙️', '💻', '🤖'];
+
 function RolesDiagram({ step }: { step: number }) {
   return (
     <g>
-      {ROLES.map((r, i) => (
-        <motion.g key={r.name} animate={{ opacity: step === 0 || step - 1 === i || step === 5 ? 1 : 0.3 }}>
-          <Box x={r.x} y={r.y} w={250} h={120} label={r.name} sub={r.does} tone={r.tone} hot={step - 1 === i} />
-        </motion.g>
-      ))}
+      <FxDefs />
+      {ROLES.map((r, i) => {
+        const hot = step - 1 === i;
+        return (
+          <motion.g key={r.name} initial={{ opacity: 0, scale: 0.7, rotate: i % 2 ? 4 : -4 }} animate={{ opacity: step === 0 || hot || step === 5 ? 1 : 0.3, scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 150, damping: 14, delay: step === 0 ? i * 0.15 : 0 }} style={{ originX: `${r.x + 125}px`, originY: `${r.y + 60}px` }}>
+            <Box x={r.x} y={r.y} w={250} h={120} label={r.name} sub={r.does} tone={r.tone} hot={hot} />
+            <Emo x={r.x + 125} y={r.y + 28} e={ROLE_ICONS[i]} size={hot ? 28 : 22} hot={hot} delay={i * 0.4} />
+            {hot && <Shine x={r.x} y={r.y} w={250} h={120} rx={10} />}
+            {hot && <Burst x={r.x + 125} y={r.y + 60} k={`role${i}`} n={10} spread={80} icons={[ROLE_ICONS[i], '✨']} />}
+          </motion.g>
+        );
+      })}
+      {step === 0 && <Pop x={300} y={200}><motion.text textAnchor="middle" dominantBaseline="central" fontSize="34" animate={{ rotate: [-10, 10, -10] }} transition={{ duration: 1.6, repeat: Infinity }}>🤔</motion.text></Pop>}
       {step === 5 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Flow d="M155 182 L155 228" count={2} dur={1} />
           <Flow d="M445 182 L445 228" count={2} dur={1} />
           <Flow d="M282 290 L318 290" count={2} dur={1} color="#c4974a" />
+          <Pop x={300} y={205}><motion.text textAnchor="middle" dominantBaseline="central" fontSize="30" animate={{ rotate: [0, 360] }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}>🧰</motion.text></Pop>
         </motion.g>
       )}
     </g>
@@ -104,6 +140,8 @@ const rolesScene = scene({
 
 /* ============ 0.3 AI, ML, DL, GenAI ============ */
 
+const NEST_ICONS = ['♟️', '📈', '🧠'];
+
 function NestDiagram({ step }: { step: number }) {
   const rings = [
     { r: 190, label: 'Artificial Intelligence', sub: 'machines doing “smart” tasks', cls: 'ring0' },
@@ -113,17 +151,31 @@ function NestDiagram({ step }: { step: number }) {
   ];
   return (
     <g>
+      <FxDefs />
+      <Twinkles n={10} seed={41} />
       {rings.map((g, i) => (
-        <motion.g key={g.label} initial={false} animate={{ opacity: step >= i ? 1 : 0.12, scale: step === i ? 1.02 : 1 }} style={{ originX: '300px', originY: '210px' }}>
+        <motion.g key={g.label} initial={{ opacity: 0, scale: 0.3 }} animate={{ opacity: step >= i ? 1 : 0.12, scale: step === i ? 1.03 : 1 }}
+          transition={{ type: 'spring', stiffness: 110, damping: 13, delay: step === 0 ? i * 0.15 : 0 }} style={{ originX: '300px', originY: '210px' }}>
           <circle cx="300" cy="210" r={g.r} className={`ring ${g.cls}`} />
           <text x="300" y={i === 3 ? 202 : 210 - g.r + 24} textAnchor="middle" className="ring-t">{g.label}</text>
           {g.sub && <text x="300" y={210 - g.r + 40} textAnchor="middle" className="ssub paper">{g.sub}</text>}
         </motion.g>
       ))}
+      {/* each doll's icon sits on the left edge of its ring */}
+      {NEST_ICONS.map((e, i) => step >= i && i < 3 && (
+        <Pop key={e} x={300 - rings[i].r + 24} y={210}><Emo x={0} y={0} e={e} size={step === i ? 26 : 20} hot={step === i} /></Pop>
+      ))}
+      {/* a dashed orbit around the doll being explained */}
+      {step < 4 && (
+        <motion.circle key={`orb${step}`} cx="300" cy="210" r={rings[Math.min(step, 3)].r + 6} fill="none" stroke="#2f7f88" strokeWidth="2" strokeDasharray="6 10"
+          initial={{ opacity: 0 }} animate={{ opacity: 0.8, rotate: 360 }} transition={{ rotate: { duration: 14, repeat: Infinity, ease: 'linear' } }} style={{ originX: '300px', originY: '210px' }} />
+      )}
       {step >= 4 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <Halo x={300} y={210} r={70} />
           <text x="300" y="222" textAnchor="middle" className="ssub night">creates text,</text>
           <text x="300" y="236" textAnchor="middle" className="ssub night">images, audio</text>
+          <Burst x={300} y={210} k="gen" n={9} spread={95} icons={['📝', '🖼️', '🎵']} />
         </motion.g>
       )}
     </g>
@@ -156,18 +208,28 @@ const SIZES = [
 
 function FoundationDiagram({ step }: { step: number }) {
   const tasks = ['chat', 'summarise', 'translate', 'write code', 'extract JSON'];
+  const taskIcons = ['💬', '📝', '🌍', '👩‍💻', '🧾'];
   return (
     <g>
+      <FxDefs />
       {step <= 1 && (
         <g>
+          <Halo x={300} y={75} r={step === 0 ? 120 : 90} />
+          {/* the "mountain of data" pouring into the model */}
+          {step === 0 && ['📚', '🌐', '📰', '💾'].map((e, i) => <Courier key={e} d={`M${120 + i * 120} 10 L300 70`} e={e} dur={1.8} begin={i * 0.45} />)}
           <Box x={210} y={40} w={180} h={70} label="Foundation model" sub="trained once, on huge data" tone="night" hot={step === 0} />
+          <Shine x={210} y={40} w={180} h={70} rx={10} />
           {tasks.map((t, i) => (
             <g key={t}>
               {step >= 1 && <Flow d={`M300 112 L${70 + i * 115} 200`} count={1} dur={1.2} />}
-              <motion.g animate={{ opacity: step >= 1 ? 1 : 0.2 }}><Box x={20 + i * 115} y={204} w={100} h={44} label={t} tone="paper" /></motion.g>
+              <motion.g initial={{ opacity: 0.2, y: 0 }} animate={{ opacity: step >= 1 ? 1 : 0.2, y: step >= 1 ? [12, 0] : 0 }} transition={{ delay: step >= 1 ? 0.15 * i : 0, type: 'spring', stiffness: 200 }}>
+                <Box x={20 + i * 115} y={204} w={100} h={44} label={t} tone="paper" />
+                {step >= 1 && <Emo x={70 + i * 115} y={272} e={taskIcons[i]} size={22} delay={i * 0.3} />}
+              </motion.g>
             </g>
           ))}
-          <text x="300" y="300" textAnchor="middle" className="cap">one model, many jobs, no separate model per task</text>
+          {step === 1 && <Pop x={300} y={24}><text textAnchor="middle" dominantBaseline="central" fontSize="26">🎩</text></Pop>}
+          <text x="300" y="320" textAnchor="middle" className="cap">one model, many jobs, no separate model per task</text>
         </g>
       )}
       {step >= 2 && (
@@ -179,17 +241,25 @@ function FoundationDiagram({ step }: { step: number }) {
               <g key={m.name}>
                 <text x="20" y={78 + i * 56} className="chip-t sm">{m.name}</text>
                 <motion.rect x="170" y={62 + i * 56} height="26" rx="5" className={slm ? 'bar-slm' : 'bar-llm'} initial={{ width: 0 }} animate={{ width: w }} transition={{ delay: i * 0.15 }} />
-                <text x={180 + w} y={80 + i * 56} className="chip-id">{m.b}B</text>
+                <motion.text x={180 + w} y={80 + i * 56} className="chip-id" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 + i * 0.15 }}>{m.b}B</motion.text>
               </g>
             );
           })}
           {step >= 3 && <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <rect x="160" y="50" width="420" height="160" rx="10" className="zone slm" />
             <text x="575" y="44" textAnchor="end" className="zone-t">SLMs: laptop / phone friendly</text>
+            <Emo x={520} y={120} e="💻" size={28} hot={step === 3} />
+            <Emo x={560} y={160} e="📱" size={24} hot={step === 3} delay={0.4} />
           </motion.g>}
           {step >= 4 && <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <rect x="160" y="214" width="420" height="106" rx="10" className="zone llm" />
             <text x="575" y="340" textAnchor="end" className="zone-t">LLMs: need serious GPUs</text>
+            <Emo x={545} y={252} e="🏭" size={28} hot />
+            {[0, 1, 2].map((i) => (
+              <g key={i} transform={`translate(${230 + i * 30} 350)`}>
+                <motion.text textAnchor="middle" fontSize="18" animate={{ y: [0, -50], opacity: [0, 1, 0] }} transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.6 }}>💸</motion.text>
+              </g>
+            ))}
           </motion.g>}
         </motion.g>
       )}
@@ -215,6 +285,13 @@ const foundationScene = scene({
 function OpenClosedDiagram({ step }: { step: number }) {
   return (
     <g>
+      <FxDefs />
+      {/* own the car 🚗 vs call the taxi 🚕 */}
+      <g transform="translate(155 20)"><motion.text textAnchor="middle" fontSize="22" animate={{ x: [-40, 40, -40], scaleX: [-1, -1, 1, 1, -1] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}>🚗</motion.text></g>
+      <g transform="translate(445 20)"><motion.text textAnchor="middle" fontSize="22" animate={{ x: [40, -40, 40] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>🚕</motion.text></g>
+      {step === 0 && <Pop x={300} y={70}><text textAnchor="middle" dominantBaseline="central" fontSize="30">🆚</text></Pop>}
+      {step === 1 && <Courier d="M155 102 L155 300" e="📦" dur={1.6} size={18} />}
+      {step === 2 && <><Courier d="M445 300 L445 102" e="✉️" dur={1.6} size={18} /><Courier d="M445 102 L445 300" e="💬" dur={1.6} begin={0.8} size={18} /></>}
       <motion.g animate={{ opacity: step === 2 ? 0.3 : 1 }}>
         <Box x={30} y={40} w={250} h={60} label="Open-weight" sub="Llama, Mistral, Qwen, Gemma" tone="teal" hot={step === 1} />
         {step >= 1 && <>
@@ -239,6 +316,11 @@ function OpenClosedDiagram({ step }: { step: number }) {
           <text x="445" y="350" textAnchor="middle" className="ok">easy · often strongest · no GPUs</text>
           <text x="155" y="374" textAnchor="middle" className="warn">you manage the hardware</text>
           <text x="445" y="374" textAnchor="middle" className="warn">pay per token · data leaves you</text>
+          <g transform="translate(300 362)">
+            <motion.g animate={{ rotate: [-12, 12, -12] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}>
+              <text textAnchor="middle" dominantBaseline="central" fontSize="30">⚖️</text>
+            </motion.g>
+          </g>
         </motion.g>
       )}
     </g>
@@ -268,8 +350,14 @@ function AppDiagram({ step }: { step: number }) {
   ];
   return (
     <g>
+      <FxDefs />
+      {step === 0 && <Pop x={470} y={262}><motion.text textAnchor="middle" dominantBaseline="central" fontSize="30" animate={{ rotate: [-8, 8, -8] }} transition={{ duration: 1.4, repeat: Infinity }}>🥱</motion.text></Pop>}
+      {/* the question travels down, the answer streams back up */}
+      {step >= 1 && step < 4 && <Courier d="M240 46 L240 256" e="❓" dur={2.2} />}
+      {step >= 4 && ['A', 'n', 's', 'w', 'e', 'r'].map((c, i) => <Courier key={i} d="M320 256 L320 46" e="💬" dur={2.4} begin={i * 0.4} size={13} />)}
+      {step === 4 && <Pop x={470} y={262}><Emo x={0} y={0} e="⚡" size={26} hot /></Pop>}
       {layers.map((l, i) => (
-        <motion.g key={l.label} animate={{ opacity: step >= Math.min(i, 2) ? 1 : 0.2 }}>
+        <motion.g key={l.label} initial={{ opacity: 0, y: -20 }} animate={{ opacity: step >= Math.min(i, 2) ? 1 : 0.2, y: 0 }} transition={{ type: 'spring', stiffness: 160, damping: 15, delay: i * 0.12 }}>
           <Box x={170} y={l.y} w={220} h={52} label={l.label} sub={l.sub} tone={i === 3 ? 'night' : i === 2 ? 'brass' : 'paper'} hot={(step === 1 && i === 2) || (step === 4 && i === 3)} />
           {i < 3 && step >= 1 && <Flow d={`M260 ${l.y + 54} L260 ${l.y + 68}`} count={1} dur={0.6} />}
           {i < 3 && step >= 4 && <Flow d={`M300 ${l.y + 68} L300 ${l.y + 54}`} count={1} dur={0.6} color="#c4974a" />}
@@ -278,18 +366,22 @@ function AppDiagram({ step }: { step: number }) {
       {step >= 2 && (
         <motion.g initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
           <Box x={430} y={130} w={150} h={46} label="📚 Documents" sub="RAG (Part 5)" tone="teal" hot={step === 2} />
+          {step === 2 && <Courier d="M505 130 L505 100 L392 180" e="📄" dur={1.6} />}
           <Flow d="M428 160 L392 180" count={1} dur={0.8} />
         </motion.g>
       )}
       {step >= 3 && (
         <motion.g initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
           <Box x={10} y={130} w={140} h={46} label="🛠 Tools" sub="SQL, APIs (Part 6)" tone="teal" hot={step === 3} />
+          {step === 3 && <Emo x={80} y={104} e="🔧" size={22} hot />}
           <Flow d="M152 160 L168 180" count={1} dur={0.8} />
         </motion.g>
       )}
       {step >= 5 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Box x={120} y={310} w={360} h={44} label="📈 Evaluation + monitoring" sub="Parts 7–8" tone="paper" hot />
+          <Shine x={120} y={310} w={360} h={44} rx={10} />
+          {['✅', '⏱️', '💰'].map((e, i) => <Emo key={e} x={150 + i * 150} y={378} e={e} size={22} hot delay={i * 0.3} />)}
         </motion.g>
       )}
     </g>
@@ -314,25 +406,38 @@ const appScene = scene({
 
 const LIFE = ['Define the problem', 'Pick a model', 'Build the app', 'Evaluate', 'Deploy', 'Monitor', 'Improve'];
 
+const LIFE_ICONS = ['🎯', '🧠', '🛠️', '🧪', '🚀', '👀', '🔧'];
+
 function LifeDiagram({ step }: { step: number }) {
   const cx = 300, cy = 205, R = 150;
   const pos = (i: number) => { const a = -Math.PI / 2 + (i / LIFE.length) * Math.PI * 2; return [cx + Math.cos(a) * R, cy + Math.sin(a) * R]; };
   const active = Math.min(LIFE.length - 1, Math.max(0, step * 2 - 1));
   return (
     <g>
+      <FxDefs />
+      <motion.circle cx={cx} cy={cy} r={R} fill="none" stroke="#c4974a" strokeWidth="5" strokeOpacity=".35" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeInOut' }} />
       <circle cx={cx} cy={cy} r={R} className="flow on" />
-      {step >= 1 && <circle r="7" fill="#c4974a"><animateMotion dur="6s" repeatCount="indefinite" path={`M${cx} ${cy - R} a${R} ${R} 0 1 1 -0.1 0`} /></circle>}
+      {step >= 1 && <Courier d={`M${cx} ${cy - R} a${R} ${R} 0 1 1 -0.1 0`} e="🧑‍🚀" dur={6} size={20} />}
       {LIFE.map((l, i) => {
         const [x, y] = pos(i);
+        const hot = i === active && step > 0;
         return (
-          <motion.g key={l} animate={{ opacity: step === 0 || i <= active + 1 ? 1 : 0.35 }}>
-            <rect x={x - 62} y={y - 20} width="124" height="40" rx="20" className={`life ${i === active && step > 0 ? 'hot' : ''}`} />
-            <text x={x} y={y + 5} textAnchor="middle" className="chip-t sm">{l}</text>
-          </motion.g>
+          <g key={l} transform={`translate(${x} ${y})`}>
+            <motion.g initial={{ scale: 0 }} animate={{ scale: hot ? 1.1 : 1, opacity: step === 0 || i <= active + 1 ? 1 : 0.35 }} transition={{ type: 'spring', stiffness: 200, damping: 14, delay: step === 0 ? 0.2 + i * 0.12 : 0 }}>
+              <rect x={-62} y={-20} width="124" height="40" rx="20" className={`life ${hot ? 'hot' : ''}`} />
+              <text x={-44} y={1} textAnchor="middle" dominantBaseline="central" fontSize="14">{LIFE_ICONS[i]}</text>
+              <text x={8} y={5} textAnchor="middle" className="chip-t sm">{l}</text>
+            </motion.g>
+          </g>
         );
       })}
+      {step >= 1 && <Burst key={active} x={pos(active)[0]} y={pos(active)[1]} k={`life${active}`} n={10} spread={55} />}
+      <motion.g animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} style={{ originX: `${cx}px`, originY: `${cy - 50}px` }}>
+        <text x={cx} y={cy - 50} textAnchor="middle" dominantBaseline="central" fontSize="28">🔁</text>
+      </motion.g>
       <text x={cx} y={cy - 4} textAnchor="middle" className="slabel">it never ends</text>
       <text x={cx} y={cy + 16} textAnchor="middle" className="ssub paper">(in a good way)</text>
+      {step === 3 && <Emo x={cx} y={cy + 52} e="🙃" size={28} hot />}
     </g>
   );
 }
@@ -373,16 +478,23 @@ function NextDiagram({ step }: { step: number }) {
   const done = ['Two sides of AI engineering', 'Four roles', 'AI ⊃ ML ⊃ DL ⊃ GenAI', 'LLMs vs SLMs', 'Open vs closed', 'Model → app', 'The lifecycle'];
   return (
     <g>
-      <text x="40" y="44" className="slabel">✓ Part 0: what you now know</text>
+      <FxDefs />
+      <Twinkles n={10} seed={61} />
+      <text x="40" y="44" className="slabel">🏅 Part 0: what you now know</text>
       {done.map((d, i) => (
-        <motion.g key={d} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.12 }}>
+        <motion.g key={d} initial={{ opacity: 0, x: -30, scale: 0.8 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.2 + i * 0.15 }}>
           <text x="52" y={78 + i * 28} className="ok">✓ {d}</text>
         </motion.g>
       ))}
+      {step === 0 && <Burst x={150} y={160} k="done" n={20} spread={140} />}
+      {step === 0 && <Burst x={150} y={160} k="done2" n={6} spread={110} icons={['🎉', '⭐']} />}
       {step >= 1 && (
-        <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+        <motion.g initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 120, damping: 14 }}>
           <Flow d="M290 180 L350 180" count={3} dur={1} color="#c4974a" />
+          <Halo x={465} y={180} r={130} />
           <Box x={355} y={120} w={220} h={120} label="Up next: Part 1 · Data" sub="what a model learns from" tone="night" hot />
+          <Shine x={355} y={120} w={220} h={120} rx={10} />
+          {['📊', '🧹', '🐍'].map((e, i) => <Emo key={e} x={420 + i * 45} y={150} e={e} size={20} delay={i * 0.3} />)}
         </motion.g>
       )}
       {step >= 2 && (
